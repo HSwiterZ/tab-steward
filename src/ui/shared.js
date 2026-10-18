@@ -401,7 +401,15 @@ export async function openFavoritePicker(tabs, onDone, { asCollection = false } 
  * command palette (⌘K / Ctrl+K)
  * ====================================================================== */
 
+let paletteInstance = null;
+
 export function openPalette({ onPick, onClose, initial = "" } = {}) {
+  // The shortcut stays live while the palette's own input has focus, so a
+  // second ⌘K has to refocus the open one instead of stacking another overlay.
+  if (paletteInstance) {
+    paletteInstance.focus();
+    return paletteInstance;
+  }
   const overlay = h("div.overlay", { style: { background: "hsl(var(--overlay))" } });
   const input = h("input.palette-input", { placeholder: paletteHint(), value: initial, spellcheck: false });
   const list = h("div.palette-list");
@@ -613,6 +621,7 @@ export function openPalette({ onPick, onClose, initial = "" } = {}) {
   };
 
   const close = () => {
+    paletteInstance = null;
     document.removeEventListener("keydown", onKey, true);
     overlay.remove();
     box.remove();
@@ -627,7 +636,8 @@ export function openPalette({ onPick, onClose, initial = "" } = {}) {
   if (initial) run(initial);
   setTimeout(() => input.focus(), 20);
 
-  return { close, focus: () => input.focus() };
+  paletteInstance = { close, focus: () => input.focus() };
+  return paletteInstance;
 }
 
 function sourceIcon(source) {

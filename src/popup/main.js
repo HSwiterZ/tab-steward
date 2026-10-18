@@ -1,4 +1,5 @@
-import { h, ico, clear, append, toast, Button, IconButton, Badge, Tabs, Empty } from "../ui/kit.js";
+import { h, ico, clear, append, toast, Button, IconButton, Badge, Tabs, Empty, hotkeys } from "../ui/kit.js";
+import { MOD_KEY } from "../core/utils.js";
 import { bootPage, TabRow, Favicon, toastError, openPalette, standardTabActions, openFavoritePicker, onStorageChanged, featureOn, paletteHint } from "../ui/shared.js";
 import { renderCollectionsPanel } from "../ui/collections-panel.js";
 import { store } from "../core/storage.js";
@@ -33,7 +34,7 @@ bootPage(async () => {
     { style: { width: "100%", minWidth: "0" }, onClick: () => openPalette({ onPick: handlePick }) },
     ico("search", 15),
     h("span", paletteHint()),
-    h("span.kbd", "Ctrl K")
+    h("span.kbd", `${MOD_KEY} K`)
   );
   const searchWrap = h("div", { style: { padding: "8px 10px 4px" } }, search);
 
@@ -228,6 +229,16 @@ bootPage(async () => {
   await render();
 
   onStorageChanged(() => render());
+
+  hotkeys({
+    "mod+k": {
+      fn: (e) => {
+        e.preventDefault();
+        openPalette({ onPick: handlePick });
+      },
+      allowTyping: true,
+    },
+  });
 
   // deep-linkable search, also handy for screenshots: popup.html?q=关键词
   const initialQuery = new URLSearchParams(location.search).get("q");

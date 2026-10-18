@@ -334,9 +334,12 @@ bootPage(async () => {
   app.view = VIEWS[initial] ? initial : "tabs";
 
   hotkeys({
-    "mod+k": (e) => {
-      e.preventDefault();
-      openPalette({ onPick: handlePick });
+    "mod+k": {
+      fn: (e) => {
+        e.preventDefault();
+        openPalette({ onPick: handlePick });
+      },
+      allowTyping: true,
     },
     escape: () => {},
   });

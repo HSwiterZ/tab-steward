@@ -1,7 +1,7 @@
-import { h, ico, append, installTooltips, watchTheme, IconButton } from "../ui/kit.js";
+import { h, ico, append, installTooltips, watchTheme, IconButton, hotkeys } from "../ui/kit.js";
 import { Favicon, openPalette, paletteHint } from "../ui/shared.js";
 import { store } from "../core/storage.js";
-import { formatClock, formatDate, hostname } from "../core/utils.js";
+import { formatClock, formatDate, hostname, MOD_KEY } from "../core/utils.js";
 
 await store.ready;
 
@@ -41,7 +41,7 @@ function renderMinimal() {
     },
     ico("search", 16),
     h("span.muted", paletteHint()),
-    h("span.kbd", "Enter")
+    h("span.kbd", `${MOD_KEY} K`)
   );
 
   const tiles = h("div.newtab-recent");
@@ -66,11 +66,14 @@ function renderMinimal() {
     )
   );
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "/" && document.activeElement === document.body) {
-      e.preventDefault();
-      openPalette({ onPick: openItem });
-    }
+  const openSearch = (e) => {
+    e.preventDefault();
+    openPalette({ onPick: openItem });
+  };
+
+  hotkeys({
+    "mod+k": { fn: openSearch, allowTyping: true },
+    "/": openSearch,
   });
 }
 
