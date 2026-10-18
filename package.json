@@ -1,0 +1,23 @@
+{
+  "name": "tab-steward",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Tab Steward — Chrome 标签管理器（零构建、零依赖）",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HSwiterZ/tab-steward.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HSwiterZ/tab-steward/issues"
+  },
+  "homepage": "https://github.com/HSwiterZ/tab-steward#readme",
+  "scripts": {
+    "test": "node tests/run.mjs",
+    "check": "node tools/check-imports.mjs && node tools/scan-undefined-refs.mjs && node tests/run.mjs",
+    "scan": "node tools/scan-undefined-refs.mjs",
+    "serve": "node tools/serve.mjs",
+    "icons": "node tools/make-icons.mjs"
+  }
+}

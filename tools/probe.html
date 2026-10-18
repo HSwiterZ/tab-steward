@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>probe</title>
+  </head>
+  <body>
+    <script type="module">
+      const k = await import("/src/ui/kit.js");
+      const img = k.h("img", { src: "X", title: "T" });
+      const inp = k.h("input", { placeholder: "P", type: "text" });
+      const div = k.h("div", { title: "DT", "data-x": "1" }, "kid");
+      document.body.append(img, inp, div);
+      document.title = "probe-done";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Steward",
+  "short_name": "TabSteward",
+  "version": "1.0.0",
+  "description": "标签管理器：聚合、搜索、使用分析、休眠、暂存收藏、快照与定时提醒，功能模块可单独开关。",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "action": {
+    "default_title": "Tab Steward",
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background/index.js",
+    "type": "module"
+  },
+  "options_page": "src/options/index.html",
+  "chrome_url_overrides": {
+    "newtab": "src/newtab/index.html"
+  },
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "storage",
+    "unlimitedStorage",
+    "bookmarks",
+    "history",
+    "sessions",
+    "notifications",
+    "alarms",
+    "favicon",
+    "contextMenus",
+    "activeTab"
+  ],
+  "optional_host_permissions": ["<all_urls>"],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": { "default": "Alt+T" },
+      "description": "打开工具栏弹窗"
+    },
+    "open-dashboard": {
+      "suggested_key": { "default": "Alt+Shift+T" },
+      "description": "打开 Dashboard"
+    },
+    "open-search": {
+      "description": "在当前页打开统一搜索"
+    }
+  }
+}

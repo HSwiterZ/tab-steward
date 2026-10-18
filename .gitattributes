@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# 二进制：不做换行转换，也不进 diff
+*.png binary
+*.jpg binary
+*.crx binary
+*.zip binary

@@ -1,0 +1,158 @@
+/* Design tokens — indigo→violet brand on a cool neutral base. */
+
+:root {
+  --radius: 0.5rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  --sp-0: 0;
+  --sp-px: 1px;
+  --sp-0-5: 2px;
+  --sp-1: 4px;
+  --sp-1-5: 6px;
+  --sp-2: 8px;
+  --sp-2-5: 10px;
+  --sp-3: 12px;
+  --sp-3-5: 14px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  --sidebar-w: 232px;
+  --topbar-h: 52px;
+  --row-h: 32px;
+}
+
+/* Brand identity. --primary is the solid stop used for every action and
+   structure affordance; the gradient stops are for the icon and hero surfaces. */
+:root {
+  --brand-from: 239 84% 67%;
+  --brand-to: 268 72% 60%;
+  --gradient-brand: linear-gradient(
+    135deg,
+    hsl(var(--brand-from)),
+    hsl(var(--brand-to))
+  );
+}
+
+/* Motion */
+:root {
+  --duration-1: 120ms;
+  --duration-2: 200ms;
+  --duration-3: 320ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Light — cool neutral, three surface tiers so cards read as raised */
+:root,
+:root[data-theme="light"] {
+  --background: 228 24% 97%;
+  --foreground: 231 25% 13%;
+  --card: 0 0% 100%;
+  --card-foreground: 231 25% 13%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 231 25% 13%;
+  --elevated: 0 0% 100%;
+  --primary: 243 75% 59%;
+  --primary-foreground: 0 0% 100%;
+  --primary-hover: 243 75% 51%;
+  --secondary: 228 22% 94%;
+  --secondary-foreground: 231 25% 18%;
+  --muted: 228 22% 94%;
+  --muted-foreground: 229 12% 46%;
+  --accent: 228 26% 92%;
+  --accent-foreground: 231 25% 15%;
+  --accent-brand: 243 75% 59% / 0.08;
+  --accent-brand-strong: 243 75% 59% / 0.14;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 152 62% 34%;
+  --success-foreground: 0 0% 100%;
+  --warning: 32 95% 40%;
+  --warning-foreground: 0 0% 100%;
+  --info: 217 91% 55%;
+  --info-foreground: 0 0% 100%;
+  --border: 228 18% 87%;
+  --border-strong: 228 16% 78%;
+  --input: 228 18% 87%;
+  --ring: 243 75% 59%;
+  --overlay: 231 25% 13% / 0.45;
+  --shadow-color: 231 30% 25%;
+  --shadow-1: 0 1px 2px hsl(var(--shadow-color) / 0.06),
+    0 1px 3px hsl(var(--shadow-color) / 0.05);
+  --shadow-2: 0 2px 4px hsl(var(--shadow-color) / 0.07),
+    0 6px 16px hsl(var(--shadow-color) / 0.08);
+  --shadow-3: 0 4px 8px hsl(var(--shadow-color) / 0.08),
+    0 16px 32px hsl(var(--shadow-color) / 0.12);
+  --shadow-brand: 0 2px 10px hsl(var(--primary) / 0.35);
+  color-scheme: light;
+}
+
+/* Dark — lifted surfaces: 8% -> 12% -> 16% instead of the old 2% steps */
+:root[data-theme="dark"] {
+  --background: 232 26% 8%;
+  --foreground: 220 25% 96%;
+  --card: 230 22% 12%;
+  --card-foreground: 220 25% 96%;
+  --popover: 230 22% 14%;
+  --popover-foreground: 220 25% 96%;
+  --elevated: 229 20% 16%;
+  --primary: 235 86% 73%;
+  --primary-foreground: 237 40% 12%;
+  --primary-hover: 235 90% 79%;
+  --secondary: 229 18% 19%;
+  --secondary-foreground: 220 25% 94%;
+  --muted: 229 18% 19%;
+  --muted-foreground: 226 14% 66%;
+  --accent: 229 18% 21%;
+  --accent-foreground: 220 25% 96%;
+  --accent-brand: 235 86% 73% / 0.14;
+  --accent-brand-strong: 235 86% 73% / 0.22;
+  --destructive: 0 72% 62%;
+  --destructive-foreground: 0 45% 12%;
+  --success: 152 55% 48%;
+  --success-foreground: 150 40% 10%;
+  --warning: 38 92% 55%;
+  --warning-foreground: 32 60% 12%;
+  --info: 213 90% 66%;
+  --info-foreground: 215 50% 12%;
+  --border: 229 16% 22%;
+  --border-strong: 229 14% 32%;
+  --input: 229 16% 26%;
+  --ring: 235 86% 73%;
+  --overlay: 232 30% 3% / 0.68;
+  --shadow-color: 232 40% 2%;
+  --shadow-1: 0 1px 2px hsl(var(--shadow-color) / 0.5),
+    0 1px 3px hsl(var(--shadow-color) / 0.35);
+  --shadow-2: 0 2px 4px hsl(var(--shadow-color) / 0.45),
+    0 6px 16px hsl(var(--shadow-color) / 0.5);
+  --shadow-3: 0 4px 8px hsl(var(--shadow-color) / 0.5),
+    0 16px 32px hsl(var(--shadow-color) / 0.6);
+  --shadow-brand: 0 2px 12px hsl(var(--primary) / 0.3);
+  color-scheme: dark;
+}
+
+/* Chrome tab-group palette, mapped to token-space so it works in both themes.
+   Data colors: kept separate from the brand ramp on purpose. */
+:root {
+  --tg-grey: 240 4% 56%;
+  --tg-blue: 217 91% 55%;
+  --tg-red: 0 72% 51%;
+  --tg-yellow: 40 92% 50%;
+  --tg-green: 142 71% 35%;
+  --tg-pink: 330 81% 60%;
+  --tg-purple: 262 83% 62%;
+  --tg-cyan: 189 94% 40%;
+  --tg-orange: 25 95% 53%;
+}

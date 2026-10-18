@@ -1,0 +1,24 @@
+# 开发过程产物：验证截图与临时脚本
+.verify/
+.verify2/
+.ui-refresh/
+
+# 本项目零构建零依赖，出现即为误装
+node_modules/
+
+# 发布产物
+dist/
+*.zip
+*.crx
+
+# 编辑器 / 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
+
+# 本地凭据（扩展不应有，留作护栏）
+.env
+.env.*
