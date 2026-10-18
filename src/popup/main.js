@@ -156,7 +156,11 @@ bootPage(async () => {
     }
     const cards = buildSiteCards(tabs);
     cards.sort((a, b) => b.avgIdle - a.avgIdle);
-    for (const card of cards) append(list, siteGroup(card));
+    // One tray holding every site card, mirroring the collections panel, so the
+    // list reads as a single object instead of a stack of loose boxes.
+    const tray = h("div.site-tray");
+    for (const card of cards) append(tray, siteGroup(card));
+    append(list, tray);
   }
 
   function siteGroup(card) {

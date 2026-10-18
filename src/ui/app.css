@@ -284,12 +284,23 @@
 
 /* The popup stacks cards down a 430px column. At that density the dashboard's
    near-invisible head gradient reads as one more tab row, so sites bleed into
-   each other — the compact surface gets a solid header band and a stronger edge. */
+   each other — the compact surface gets a solid header band, and every card
+   sits inside one tray, the way the collections panel does. */
+.app-compact .site-tray {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border: 1px solid hsl(var(--border-strong));
+  border-radius: var(--radius-lg);
+  background: hsl(var(--muted));
+  box-shadow: var(--shadow-1);
+}
 .app-compact .site-card {
-  border-color: hsl(var(--border-strong));
+  box-shadow: none;
 }
 .app-compact .site-card-head {
-  background: hsl(var(--muted));
+  background: hsl(var(--accent));
   padding: var(--sp-2) var(--sp-2-5);
 }
 .site-card-foot {
