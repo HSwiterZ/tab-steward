@@ -387,7 +387,6 @@ export function openMenu(anchor, items, opts = {}) {
           e.stopPropagation();
           if (item.disabled) return;
           if (item.submenu) return;
-          state.open = false;
           teardown();
           try {
             const r = item.onSelect?.(item);
@@ -400,10 +399,11 @@ export function openMenu(anchor, items, opts = {}) {
           state.index = [...menu.children].indexOf(el);
           paintActive();
           if (state.submenu) {
-            state.submenu.remove();
+            state.submenu.close?.();
             state.submenu = null;
           }
           if (item.submenu && !item.disabled) {
+            state.submenu?.close?.();
             state.submenu = openMenu(el, item.submenu, { nested: true, preferredSide: "right" });
           }
         },
@@ -422,6 +422,14 @@ export function openMenu(anchor, items, opts = {}) {
   for (const item of items) menu.appendChild(renderItem(item));
 
   const position = () => {
+    // A closed menu, or one whose anchor was re-rendered away, is gone for good.
+    // Re-attaching it here is exactly what made a dismissed menu reappear in the
+    // top-left corner the next time the page scrolled.
+    if (!state.open) return;
+    if (!anchor.isConnected) {
+      teardown();
+      return;
+    }
     const rect = anchor.getBoundingClientRect?.() || { left: 0, top: 0, bottom: 0, right: 0, width: 0, height: 0 };
     menu.style.visibility = "hidden";
     // Leave the flow before measuring: while the menu is a static block it
