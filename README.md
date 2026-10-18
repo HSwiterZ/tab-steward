@@ -52,6 +52,22 @@ Every clip below is a screen recording of the real interface driven by the built
   </tr>
 </table>
 
+### Right-click menu
+
+The one feature no clip can show: the menu belongs to the browser, not the page. On any page the
+context menu carries a "Tab Steward — 标签页管理器" entry (boxed below), and its submenu rebuilds
+itself as your collections and windows change.
+
+<img src="docs/context-menu.png" width="420" alt="Chrome context menu with the Tab Steward submenu open">
+
+- **设定提醒** — preset durations, for the page or the whole site
+- **暂存到…** / **暂存并关闭到…** — both list every collection
+- **休眠此标签**
+- **移动到窗口** — the other normal windows
+- **整理所有标签（站点 + 收藏区分组）**
+- **保护此站点（不自动休眠）**
+- **打开 Dashboard**
+
 ## Install
 
 1. Open `chrome://extensions`
@@ -70,10 +86,8 @@ Every clip below is a screen recording of the real interface driven by the built
 
 Shortcuts: `Alt+T` popup, `Alt+Shift+T` Dashboard, `Ctrl/⌘+K` unified search.
 
-Right-clicking a page adds a "Tab Steward" entry with a submenu: set a reminder (preset durations),
-stash into…, stash and close into… (both list every collection), sleep this tab, move to window
-(lists normal windows), organize all tabs (sites adjacent + grouped by collection), and a per-site
-protection toggle. The submenu rebuilds itself whenever collections or windows change.
+Right-clicking a page adds a "Tab Steward — 标签页管理器" entry; its submenu is listed, with a
+screenshot, under **Right-click menu** in the Demos section above.
 
 ## Feature modules and defaults
 
