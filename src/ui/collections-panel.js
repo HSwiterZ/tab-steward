@@ -31,7 +31,7 @@ import { formatRelative, hostname } from "../core/utils.js";
  */
 export function renderCollectionsPanel(ctx) {
   const expanded = new Set();
-  const drag = { id: null, from: null };
+  const drag = { id: null, from: null, consumed: false };
   const list = h("div.col.gap-1-5");
 
   const refresh = () => {
@@ -76,7 +76,9 @@ export function renderCollectionsPanel(ctx) {
       ),
       isOpen ? body : null
     );
-    if (isOpen) installCollectionDnd(body, col, { refresh }, drag);
+    // Installed even when collapsed: the header row is a valid drop target, and a
+    // collection you have not opened yet still has to accept a dragged tab.
+    installCollectionDnd(el, body, col, { refresh }, drag);
     return el;
   }
 
@@ -236,9 +238,7 @@ function renderStashItem(col, item, ctx) {
 /** Cross-collection drag & drop, plus reordering inside one collection. */
 // Drag state lives on the panel, not per collection: a drop landing on another
 // collection has to know which row started the drag and where it came from.
-function installCollectionDnd(container, col, ctx, drag) {
-  const collectionEl = container.closest(".side-col-item");
-
+function installCollectionDnd(wrapper, container, col, ctx, drag) {
   // A tab dragged in from the list is stashed and kept open — closing it on drop
   // would be a destructive act the user never asked for.
   const stashDraggedTab = async () => {
@@ -256,14 +256,11 @@ function installCollectionDnd(container, col, ctx, drag) {
   };
 
   const markTarget = (on, related) => {
-    if (!collectionEl) return;
     if (on) {
-      for (const other of document.querySelectorAll('.side-col-item[data-drop-active="true"]')) {
-        if (other !== collectionEl) delete other.dataset.dropActive;
-      }
-      collectionEl.dataset.dropActive = "true";
-    } else if (!related || !collectionEl.contains(related)) {
-      delete collectionEl.dataset.dropActive;
+      for (const n of document.querySelectorAll(".side-col-item[data-drop-active]")) delete n.dataset.dropActive;
+      wrapper.dataset.dropActive = "true";
+    } else if (!related || !wrapper.contains(related)) {
+      delete wrapper.dataset.dropActive;
     }
   };
 
@@ -272,6 +269,7 @@ function installCollectionDnd(container, col, ctx, drag) {
     if (!row) return;
     drag.id = row.dataset.id;
     drag.from = row.dataset.collection;
+    drag.consumed = false;
     row.dataset.dragging = "true";
     e.dataTransfer.effectAllowed = "move";
     try {
@@ -289,6 +287,8 @@ function installCollectionDnd(container, col, ctx, drag) {
   });
 
   container.addEventListener("drop", async (e) => {
+    if (drag.consumed) return;
+    drag.consumed = true;
     e.preventDefault();
     markTarget(false);
     if (!drag.id) {
@@ -328,31 +328,34 @@ function installCollectionDnd(container, col, ctx, drag) {
     for (const n of container.querySelectorAll("[data-dragging]")) n.dataset.dragging = "false";
   });
 
-  // dropping anywhere on the collection: its header, or an empty body
-  collectionEl?.addEventListener("dragover", (e) => {
+  // The wrapper covers the header row too, so a collapsed collection still
+  // takes a drop. dragend bubbles, so the source's own handler clears the marks.
+  wrapper.addEventListener("dragover", (e) => {
     if (!drag.id && !tabDrag.tab) return;
     if (drag.id && drag.id === e.target.closest(".stash-item")?.dataset.id) return;
     e.preventDefault();
     markTarget(true);
   });
-  collectionEl?.addEventListener("dragleave", (e) => markTarget(false, e.relatedTarget));
-  collectionEl?.addEventListener("drop", async (e) => {
-    if (e.target.closest(".stash-item")) return;
+  wrapper.addEventListener("dragleave", (e) => markTarget(false, e.relatedTarget));
+  wrapper.addEventListener("drop", async (e) => {
+    if (drag.consumed || e.target.closest(".stash-item")) return;
+    if (!drag.id && !tabDrag.tab) return;
+    drag.consumed = true;
+    e.preventDefault();
     markTarget(false);
     if (!drag.id) {
-      if (!tabDrag.tab) return;
-      e.preventDefault();
       await stashDraggedTab();
       return;
     }
-    e.preventDefault();
-    const toCol = container.dataset.collection;
     try {
-      if (drag.from !== toCol) await moveItemBetween(drag.id, drag.from, toCol, -1);
+      if (drag.from !== col.id) await moveItemBetween(drag.id, drag.from, col.id, -1);
       ctx.refresh();
+    } catch (err) {
+      toastError("移动失败", err?.message);
     } finally {
       drag.id = null;
       drag.from = null;
     }
   });
+
 }
