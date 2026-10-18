@@ -35,20 +35,20 @@ Every clip below is a screen recording of the real interface driven by the built
 
 <table>
   <tr>
-    <td><img src="docs/demos/search.gif" width="420" alt="Unified search"><br><b>Unified search</b><br>One <code>⌘K</code> palette across tabs, stashes, bookmarks, history and recently closed.</td>
-    <td><img src="docs/demos/stash-drag.gif" width="420" alt="Drag a tab into a collection"><br><b>Drag to stash</b><br>Drop a tab on any collection — collapsed ones take it too — and the tab stays open.</td>
+    <td><img src="docs/demos/search.gif" width="460" alt="Unified search"><br><b>Unified search</b><br>One <code>⌘K</code> palette across tabs, stashes, bookmarks, history and recently closed.</td>
+    <td><img src="docs/demos/stash-drag.gif" width="460" alt="Drag a tab into a collection"><br><b>Drag to stash</b><br>Drop a tab on any collection — collapsed ones take it too — and the tab stays open.</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/sleep.gif" width="420" alt="Sleeping tabs"><br><b>Sleeping</b><br>Every site carries an idle score; sleep one tab or the whole group.</td>
-    <td><img src="docs/demos/duplicates.gif" width="420" alt="Duplicate tabs"><br><b>Duplicates</b><br>Filter down to the duplicates. It only ever prompts — closing stays your call.</td>
+    <td><img src="docs/demos/sleep.gif" width="460" alt="Sleeping tabs"><br><b>Sleeping</b><br>Every site carries an idle score; sleep one tab or the whole group.</td>
+    <td><img src="docs/demos/duplicates.gif" width="460" alt="Duplicate tabs"><br><b>Duplicates</b><br>Filter down to the duplicates. It only ever prompts — closing stays your call.</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/organize.gif" width="420" alt="Auto organize"><br><b>Auto-organize</b><br>Sites adjacent, or grouped by collection, in one action.</td>
-    <td><img src="docs/demos/snapshots.gif" width="420" alt="Workspace snapshots"><br><b>Workspace snapshots</b><br>Save a window layout with its tab order, restore it whenever.</td>
+    <td><img src="docs/demos/organize.gif" width="460" alt="Auto organize"><br><b>Auto-organize</b><br>Sites adjacent, or grouped by collection, in one action.</td>
+    <td><img src="docs/demos/snapshots.gif" width="460" alt="Workspace snapshots"><br><b>Workspace snapshots</b><br>Save a window layout with its tab order, restore it whenever.</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/reminders.gif" width="420" alt="Timed reminders"><br><b>Timed reminders</b><br>Pick the target from open tabs, set a duration, get a notification with action buttons.</td>
-    <td><img src="docs/demos/analytics.gif" width="420" alt="Usage analytics"><br><b>Usage analytics</b><br>Foreground time and activation counts per site and per page, all local.</td>
+    <td><img src="docs/demos/reminders.gif" width="460" alt="Timed reminders"><br><b>Timed reminders</b><br>Pick the target from open tabs, set a duration, get a notification with action buttons.</td>
+    <td><img src="docs/demos/analytics.gif" width="460" alt="Usage analytics"><br><b>Usage analytics</b><br>Foreground time and activation counts per site and per page, all local.</td>
   </tr>
 </table>
 

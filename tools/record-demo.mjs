@@ -9,9 +9,10 @@
  * Needs Chrome and ffmpeg on PATH (override with CHROME=...). Output goes to
  * docs/demos/<name>.gif.
  *
- * Each step fires its action without waiting for it, then samples the screen
- * every FRAME_MS for `hold` milliseconds — so typing, moving highlights and
- * scrolling are captured as motion instead of one jump cut per action.
+ * Every clip is the same 960x540 window so the README grid stays even; only the
+ *取景 origin changes per demo. The layout viewport is forced with CDP because the
+ * OS clamps --window-size to the screen's work area — a 1440x900 window can come
+ * back as a 764x485 viewport, which would record the site in a narrow layout.
  */
 import { spawn, spawnSync } from "node:child_process";
 import { mkdir, rm, writeFile } from "node:fs/promises";
@@ -31,22 +32,20 @@ const OUT_DIR = join(ROOT, "docs", "demos");
 const WORK = join(tmpdir(), "tab-steward-demos");
 const FRAME_MS = Number(process.env.DEMO_FRAME_MS || 110);
 const COLORS = Number(process.env.DEMO_COLORS || 96);
-const PAD = 10;
+const VIEW = { width: 1440, height: 900 };
+const CLIP = { width: 960, height: 540 };
 
-// Fractions of the viewport, because the window Chrome actually gets is capped
-// by the screen: asking for 1440x900 can yield 764x485.
-const MAIN = { x: 0.014, y: 0.14, w: 0.63, h: 0.56 };
-const FULL = { x: 0, y: 0, w: 1, h: 0.66 };
-const WHOLE = { x: 0, y: 0, w: 1, h: 1 };
+const MAIN = { x: 20, y: 100 };
+const CENTER = { x: 240, y: 60 };
+const PANEL = { x: 460, y: 80 };
 const WAIT = `(ms) => new Promise((r) => setTimeout(r, ms))`;
 
 const demos = [
   {
     name: "search",
-    // The palette is centred with a transform, and headless Chrome paints
-    // transform-centred elements unreliably — clipping to its measured rect cut
-    // the palette out entirely. Take the whole top band instead.
-    clip: FULL,
+    // The palette is centred with a transform, which headless Chrome paints
+    // unreliably — a wide fixed window keeps it in frame either way.
+    at: CENTER,
     steps: [
       { hold: 700, shot: "顶栏" },
       { do: `window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", ctrlKey: true, bubbles: true })), "opened"`, hold: 900, shot: "⌘K 打开统一搜索" },
@@ -57,9 +56,7 @@ const demos = [
   },
   {
     name: "stash-drag",
-    // Measured per frame; the union below covers the panel collapsed and expanded.
-    clipSel: ".side-panel",
-    clip: FULL,
+    at: PANEL,
     steps: [
       { do: `[...document.querySelectorAll(".side-col-item")].map(n => n.dataset.id + "=" + n.querySelector(".badge").textContent).join(" ")`, hold: 800, shot: "收藏区默认折叠" },
       { do: `(() => { const dt = new DataTransfer(); window.__dt = dt; document.querySelector(".tab-row").dispatchEvent(new DragEvent("dragstart", { bubbles: true, cancelable: true, dataTransfer: dt })); const head = document.querySelector('.side-col-item[data-id="stash"] .side-col-head'); head.dispatchEvent(new DragEvent("dragover", { bubbles: true, cancelable: true, dataTransfer: dt })); return "highlight=" + document.querySelector('.side-col-item[data-id="stash"]').dataset.dropActive; })()`, hold: 1100, shot: "标签拖到暂存区上" },
@@ -70,16 +67,15 @@ const demos = [
   },
   {
     name: "sleep",
-    // The row that changes sits below the toolbar, so keep the whole frame.
-    clip: WHOLE,
+    at: MAIN,
     steps: [
       { do: `document.querySelectorAll(".site-card").length + " 张卡片 / " + document.querySelectorAll(".tab-row").length + " 行"`, hold: 900, shot: "站点卡片按闲置度排序" },
-      { do: `(() => { const b = [...document.querySelectorAll('.tab-row button[title="休眠"]')].find(n => !n.disabled); if (!b) throw new Error("no enabled sleep button"); b.click(); return "clicked"; })()`, hold: 2600, shot: "点一下，这行进入休眠" },
+      { do: `(() => { const b = [...document.querySelectorAll('.tab-row button[title="休眠"]')].find(n => !n.disabled); if (!b) throw new Error("no enabled sleep button"); b.scrollIntoView({ block: "center" }); b.click(); return "clicked"; })()`, hold: 2600, shot: "点一下，这行进入休眠" },
     ],
   },
   {
     name: "duplicates",
-    clip: WHOLE,
+    at: MAIN,
     steps: [
       { do: `document.querySelectorAll(".tab-row").length + " 行"`, hold: 900, shot: "全部标签" },
       { do: `(() => { const b = [...document.querySelectorAll("button")].find(n => /^重复/.test(n.textContent.trim())); if (!b) throw new Error("no duplicate chip"); b.click(); return "filtered"; })()`, hold: 2200, shot: "只看重复标签" },
@@ -87,7 +83,7 @@ const demos = [
   },
   {
     name: "organize",
-    clip: MAIN,
+    at: MAIN,
     steps: [
       { do: `(() => { const b = [...document.querySelectorAll("button")].find(n => (n.getAttribute("title") || "") === "自动整理"); if (!b) throw new Error("no organize button"); b.click(); return "menu"; })()`, hold: 1200, shot: "自动整理菜单" },
       { do: `(() => { const b = [...document.querySelectorAll(".menu-item")].find(n => /当前窗口：同站点相邻/.test(n.textContent)); if (!b) throw new Error("no arrange item"); b.click(); return "arranged"; })()`, hold: 2600, shot: "同站点排到相邻位置" },
@@ -96,7 +92,7 @@ const demos = [
   {
     name: "snapshots",
     page: "src/dashboard/index.html#snapshots",
-    clip: MAIN,
+    at: MAIN,
     steps: [
       { hold: 900, shot: "工作区快照列表" },
       { do: `(() => { const b = [...document.querySelectorAll("button")].find(n => /保存当前窗口/.test(n.textContent)); if (!b) throw new Error("no save button"); b.click(); return "saved"; })()`, hold: 2600, shot: "保存当前窗口为新快照" },
@@ -105,7 +101,7 @@ const demos = [
   {
     name: "reminders",
     page: "src/dashboard/index.html#reminders",
-    clip: MAIN,
+    at: MAIN,
     steps: [
       { hold: 900, shot: "提醒列表与到期项" },
       { do: `(() => { const b = [...document.querySelectorAll("button")].find(n => /创建提醒/.test(n.textContent)); if (!b) throw new Error("no create-reminder button"); b.click(); return "form"; })()`, hold: 1500, shot: "创建提醒：目标从已打开标签里选" },
@@ -115,7 +111,7 @@ const demos = [
   {
     name: "analytics",
     page: "src/dashboard/index.html#analytics",
-    clip: MAIN,
+    at: MAIN,
     steps: [
       { hold: 900, shot: "总览与站点时长排行" },
       { do: `(async () => { const el = document.scrollingElement; for (let y = 0; y <= 480; y += 40) { el.scrollTop = y; await (${WAIT})(70); } return "scrolled"; })()`, hold: 1600, shot: "逐页使用时长明细" },
@@ -144,9 +140,9 @@ function launchChrome() {
       "--headless=new",
       "--disable-gpu",
       "--hide-scrollbars",
-      `--remote-debugging-port=${PORT}`,
-      "--window-size=1440,900",
       "--force-device-scale-factor=1",
+      `--remote-debugging-port=${PORT}`,
+      `--window-size=${VIEW.width},${VIEW.height}`,
       `--user-data-dir=${join(WORK, "profile")}`,
       "about:blank",
     ],
@@ -191,31 +187,13 @@ async function connect() {
   return { ws, send, evaluate };
 }
 
-async function measureRect(evaluate, demo) {
-  const [vpW, vpH] = await evaluate(`[innerWidth, innerHeight]`);
-  if (demo.clipSel) {
-    const sel = JSON.stringify(demo.clipSel);
-    const found = await evaluate(`(() => { const n = document.querySelector(${sel}); if (!n) return null; const b = n.getBoundingClientRect(); return [b.x, b.y, b.width, b.height]; })()`);
-    if (found) return { x: Math.max(0, found[0] - PAD), y: Math.max(0, found[1] - PAD), width: found[2] + PAD * 2, height: found[3] + PAD * 2, vpW, vpH };
-  }
-  const f = demo.clip;
-  return { x: f.x * vpW, y: f.y * vpH, width: f.w * vpW, height: f.h * vpH, vpW, vpH };
+function cropFor(demo) {
+  return {
+    x: Math.max(0, Math.min(demo.at.x, VIEW.width - CLIP.width)),
+    y: Math.max(0, Math.min(demo.at.y, VIEW.height - CLIP.height)),
+  };
 }
 
-function unionRect(a, b) {
-  if (!a) return b;
-  const x = Math.min(a.x, b.x);
-  const y = Math.min(a.y, b.y);
-  const right = Math.max(a.x + a.width, b.x + b.width);
-  const bottom = Math.max(a.y + a.height, b.y + b.height);
-  return { x, y, width: right - x, height: bottom - y, vpW: b.vpW, vpH: b.vpH };
-}
-
-function clampRect(r) {
-  const x = Math.max(0, Math.round(r.x));
-  const y = Math.max(0, Math.round(r.y));
-  return { x, y, width: Math.max(60, Math.round(Math.min(r.vpW - x, r.width))), height: Math.max(60, Math.round(Math.min(r.vpH - y, r.height))) };
-}
 async function run() {
   const filter = process.argv[2];
   const chosen = filter ? demos.filter((d) => d.name.includes(filter)) : demos;
@@ -238,6 +216,7 @@ async function run() {
   await waitForUrl(`http://127.0.0.1:${PORT}/json/version`);
   const { ws, send, evaluate } = await connect();
   await send("Page.enable");
+  await send("Emulation.setDeviceMetricsOverride", { ...VIEW, deviceScaleFactor: 1, mobile: false });
 
   const report = [];
   for (const demo of chosen) {
@@ -255,12 +234,13 @@ async function run() {
     await evaluate(`localStorage.clear(), "cleared"`);
     await send("Page.reload", { ignoreCache: true });
     await sleep(1800);
-    // Frames are always the full viewport so the sequence has one constant size
-    // (mixed sizes break paletteuse, or silently scramble the GIF). The crop is
-    // applied in ffmpeg, as the union of every rect seen while recording.
-    let seen = null;
+    if ((await evaluate(`[innerWidth, innerHeight]`).then((v) => v.join("x"))) !== `${VIEW.width}x${VIEW.height}`) {
+      errors.push("viewport override did not stick");
+    }
+
+    // Full viewport every frame: a constant frame size is what keeps the image
+    // sequence encodable. The crop happens in ffmpeg.
     const grab = async () => {
-      seen = unionRect(seen, await measureRect(evaluate, demo));
       const shot = await send("Page.captureScreenshot", { format: "png" });
       await writeFile(join(dir, `frame_${String(++frame).padStart(3, "0")}.png`), Buffer.from(shot.data, "base64"));
     };
@@ -282,17 +262,16 @@ async function run() {
       } while (Date.now() - started < (step.hold ?? 700));
       await running;
       if (failure) errors.push(`step ${i + 1} (${step.shot}): ${failure}`);
-      console.log(`  ${demo.name} #${i + 1} ${step.shot} -> ${failure ? "ERROR " + failure : value ?? "ok"} (${frame} frames)`);
+      console.log(`  ${demo.name} #${i + 1} ${step.shot} -> ${failure ? "ERROR " + failure : value ?? "ok"}`);
     }
 
     const gif = join(OUT_DIR, `${demo.name}.gif`);
-    const clip = clampRect(seen || (await measureRect(evaluate, demo)));
-    const crop = `crop=${clip.width}:${clip.height}:${clip.x}:${clip.y}:exact=0`;
-    const vf = `${crop},split[s][o];[o]palettegen=max_colors=` + COLORS + ":stats_mode=diff[p];[s][p]paletteuse=dither=bayer:bayer_scale=5";
+    const { x, y } = cropFor(demo);
+    const vf = `crop=${CLIP.width}:${CLIP.height}:${x}:${y},split[s][o];[o]palettegen=max_colors=${COLORS}:stats_mode=diff[p];[s][p]paletteuse=dither=bayer:bayer_scale=5`;
     const enc = spawnSync("ffmpeg", ["-y", "-loglevel", "error", "-framerate", String(Math.round(1000 / FRAME_MS)), "-i", join(dir, "frame_%03d.png"), "-vf", vf, gif]);
     if (enc.status !== 0) errors.push(`ffmpeg: ${enc.stderr?.toString().slice(0, 200)}`);
     report.push({ demo: demo.name, frames: frame, errors });
-    console.log(`${errors.length ? "WARN" : "ok  "} ${demo.name}.gif — ${frame} frames`);
+    console.log(`${errors.length ? "WARN" : "ok  "} ${demo.name}.gif — ${frame} frames @ ${x},${y}`);
   }
 
   ws.close();

@@ -31,20 +31,20 @@ Tab Steward 会量出每个标签已经闲置多久，把陈旧的休眠掉，�
 
 <table>
   <tr>
-    <td><img src="docs/demos/search.gif" width="420" alt="统一搜索"><br><b>统一搜索</b><br>一个 <code>⌘K</code> 面板同时搜标签 / 暂存 / 书签 / 历史 / 最近关闭。</td>
-    <td><img src="docs/demos/stash-drag.gif" width="420" alt="拖拽暂存"><br><b>拖拽暂存</b><br>把标签拖到任一收藏区，折叠着的也接得住；标签不会被关掉。</td>
+    <td><img src="docs/demos/search.gif" width="460" alt="统一搜索"><br><b>统一搜索</b><br>一个 <code>⌘K</code> 面板同时搜标签 / 暂存 / 书签 / 历史 / 最近关闭。</td>
+    <td><img src="docs/demos/stash-drag.gif" width="460" alt="拖拽暂存"><br><b>拖拽暂存</b><br>把标签拖到任一收藏区，折叠着的也接得住；标签不会被关掉。</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/sleep.gif" width="420" alt="休眠"><br><b>休眠</b><br>每个站点带闲置度，可以只睡一个标签，也可以整组休眠。</td>
-    <td><img src="docs/demos/duplicates.gif" width="420" alt="重复标签"><br><b>重复标签</b><br>一键筛出重复项。它只提示，关不关由你决定。</td>
+    <td><img src="docs/demos/sleep.gif" width="460" alt="休眠"><br><b>休眠</b><br>每个站点带闲置度，可以只睡一个标签，也可以整组休眠。</td>
+    <td><img src="docs/demos/duplicates.gif" width="460" alt="重复标签"><br><b>重复标签</b><br>一键筛出重复项。它只提示，关不关由你决定。</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/organize.gif" width="420" alt="自动整理"><br><b>自动整理</b><br>同站点相邻，或按收藏区建标签组，一步完成。</td>
-    <td><img src="docs/demos/snapshots.gif" width="420" alt="工作区快照"><br><b>工作区快照</b><br>保存窗口的标签布局与顺序，随时整组恢复。</td>
+    <td><img src="docs/demos/organize.gif" width="460" alt="自动整理"><br><b>自动整理</b><br>同站点相邻，或按收藏区建标签组，一步完成。</td>
+    <td><img src="docs/demos/snapshots.gif" width="460" alt="工作区快照"><br><b>工作区快照</b><br>保存窗口的标签布局与顺序，随时整组恢复。</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/reminders.gif" width="420" alt="定时提醒"><br><b>定时提醒</b><br>目标从已打开的标签里选，设定时长，到点弹带按钮的通知。</td>
-    <td><img src="docs/demos/analytics.gif" width="420" alt="使用分析"><br><b>使用分析</b><br>站点与逐页的前台时长、激活次数，全部留在本机。</td>
+    <td><img src="docs/demos/reminders.gif" width="460" alt="定时提醒"><br><b>定时提醒</b><br>目标从已打开的标签里选，设定时长，到点弹带按钮的通知。</td>
+    <td><img src="docs/demos/analytics.gif" width="460" alt="使用分析"><br><b>使用分析</b><br>站点与逐页的前台时长、激活次数，全部留在本机。</td>
   </tr>
 </table>
 

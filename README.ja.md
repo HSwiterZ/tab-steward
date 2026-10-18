@@ -35,20 +35,20 @@ Tab Steward は各タブがどれだけ放置されているかを計測し、�
 
 <table>
   <tr>
-    <td><img src="docs/demos/search.gif" width="420" alt="統一検索"><br><b>統一検索</b><br><code>⌘K</code> パレットひとつでタブ／一時保存／ブックマーク／履歴／閉じたタブを横断検索。</td>
-    <td><img src="docs/demos/stash-drag.gif" width="420" alt="ドラッグで一時保存"><br><b>ドラッグで一時保存</b><br>タブをコレクションにドロップ。折りたたんだ状態でも受け取り、タブは閉じません。</td>
+    <td><img src="docs/demos/search.gif" width="460" alt="統一検索"><br><b>統一検索</b><br><code>⌘K</code> パレットひとつでタブ／一時保存／ブックマーク／履歴／閉じたタブを横断検索。</td>
+    <td><img src="docs/demos/stash-drag.gif" width="460" alt="ドラッグで一時保存"><br><b>ドラッグで一時保存</b><br>タブをコレクションにドロップ。折りたたんだ状態でも受け取り、タブは閉じません。</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/sleep.gif" width="420" alt="スリープ"><br><b>スリープ</b><br>サイトごとにアイドル度を表示。1タブだけも、グループ全体も。</td>
-    <td><img src="docs/demos/duplicates.gif" width="420" alt="重複タブ"><br><b>重複タブ</b><br>重複だけを絞り込み。通知するだけで、閉じる判断はあなたに残します。</td>
+    <td><img src="docs/demos/sleep.gif" width="460" alt="スリープ"><br><b>スリープ</b><br>サイトごとにアイドル度を表示。1タブだけも、グループ全体も。</td>
+    <td><img src="docs/demos/duplicates.gif" width="460" alt="重複タブ"><br><b>重複タブ</b><br>重複だけを絞り込み。通知するだけで、閉じる判断はあなたに残します。</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/organize.gif" width="420" alt="自動整理"><br><b>自動整理</b><br>サイトを隣接、またはコレクション別にグループ化をワン操作。</td>
-    <td><img src="docs/demos/snapshots.gif" width="420" alt="ワークスペーススナップショット"><br><b>ワークスペーススナップショット</b><br>ウィンドウのタブ構成と順序を保存し、いつでも復元。</td>
+    <td><img src="docs/demos/organize.gif" width="460" alt="自動整理"><br><b>自動整理</b><br>サイトを隣接、またはコレクション別にグループ化をワン操作。</td>
+    <td><img src="docs/demos/snapshots.gif" width="460" alt="ワークスペーススナップショット"><br><b>ワークスペーススナップショット</b><br>ウィンドウのタブ構成と順序を保存し、いつでも復元。</td>
   </tr>
   <tr>
-    <td><img src="docs/demos/reminders.gif" width="420" alt="時刻指定リマインダー"><br><b>時刻指定リマインダー</b><br>対象は開いているタブから選び、時間を設定。ボタン付き通知で届きます。</td>
-    <td><img src="docs/demos/analytics.gif" width="420" alt="使用状況分析"><br><b>使用状況分析</b><br>サイト別・ページ別のフォアグラウンド時間とアクティブ回数。すべてローカル。</td>
+    <td><img src="docs/demos/reminders.gif" width="460" alt="時刻指定リマインダー"><br><b>時刻指定リマインダー</b><br>対象は開いているタブから選び、時間を設定。ボタン付き通知で届きます。</td>
+    <td><img src="docs/demos/analytics.gif" width="460" alt="使用状況分析"><br><b>使用状況分析</b><br>サイト別・ページ別のフォアグラウンド時間とアクティブ回数。すべてローカル。</td>
   </tr>
 </table>
 
