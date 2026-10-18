@@ -28,6 +28,30 @@ Everything except the open-tab list, the stash and the usage analytics can be sw
 stays in `chrome.storage.local`; the optional LLM helper is off by default and talks only to a base
 URL you supply. See [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) for icon and style provenance.
 
+## Demos
+
+Every clip below is a screen recording of the real interface driven by the built-in mock
+(`src/dev/mock-chrome.js`) with seeded data — nobody's actual browsing history appears in them.
+
+<table>
+  <tr>
+    <td><img src="docs/demos/search.gif" width="420" alt="Unified search"><br><b>Unified search</b><br>One <code>⌘K</code> palette across tabs, stashes, bookmarks, history and recently closed.</td>
+    <td><img src="docs/demos/stash-drag.gif" width="420" alt="Drag a tab into a collection"><br><b>Drag to stash</b><br>Drop a tab on any collection — collapsed ones take it too — and the tab stays open.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/sleep.gif" width="420" alt="Sleeping tabs"><br><b>Sleeping</b><br>Every site carries an idle score; sleep one tab or the whole group.</td>
+    <td><img src="docs/demos/duplicates.gif" width="420" alt="Duplicate tabs"><br><b>Duplicates</b><br>Filter down to the duplicates. It only ever prompts — closing stays your call.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/organize.gif" width="420" alt="Auto organize"><br><b>Auto-organize</b><br>Sites adjacent, or grouped by collection, in one action.</td>
+    <td><img src="docs/demos/snapshots.gif" width="420" alt="Workspace snapshots"><br><b>Workspace snapshots</b><br>Save a window layout with its tab order, restore it whenever.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/reminders.gif" width="420" alt="Timed reminders"><br><b>Timed reminders</b><br>Pick the target from open tabs, set a duration, get a notification with action buttons.</td>
+    <td><img src="docs/demos/analytics.gif" width="420" alt="Usage analytics"><br><b>Usage analytics</b><br>Foreground time and activation counts per site and per page, all local.</td>
+  </tr>
+</table>
+
 ## Install
 
 1. Open `chrome://extensions`
@@ -145,6 +169,7 @@ node tools/check-imports.mjs  # every named import has a matching export
 node tools/scan-undefined-refs.mjs  # the reverse: identifiers used but never imported (e.g. Button)
 node tools/make-icons.mjs     # regenerate the icons (pixel self-check; a transparent output fails the run)
 node tests/run.mjs            # automated tests for the core logic (46 cases)
+node tools/record-demo.mjs    # regenerate the demo GIFs (needs Chrome + ffmpeg)
 ```
 
 `package.json` holds scripts only, so `npm test` and `npm run check` work out of the box (import

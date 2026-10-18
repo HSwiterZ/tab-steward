@@ -25,6 +25,29 @@ Tab Steward 会量出每个标签已经闲置多久，把陈旧的休眠掉，�
 所有数据只留在本机 `chrome.storage.local`；可选的 LLM 助手默认关闭，且只与你填写的 Base URL 通信。
 图标与样式的来源见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。
 
+## 功能演示
+
+下面每一段都是真实界面的录屏，数据来自内置的 mock 种子（`src/dev/mock-chrome.js`），不含任何人的实际浏览记录。
+
+<table>
+  <tr>
+    <td><img src="docs/demos/search.gif" width="420" alt="统一搜索"><br><b>统一搜索</b><br>一个 <code>⌘K</code> 面板同时搜标签 / 暂存 / 书签 / 历史 / 最近关闭。</td>
+    <td><img src="docs/demos/stash-drag.gif" width="420" alt="拖拽暂存"><br><b>拖拽暂存</b><br>把标签拖到任一收藏区，折叠着的也接得住；标签不会被关掉。</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/sleep.gif" width="420" alt="休眠"><br><b>休眠</b><br>每个站点带闲置度，可以只睡一个标签，也可以整组休眠。</td>
+    <td><img src="docs/demos/duplicates.gif" width="420" alt="重复标签"><br><b>重复标签</b><br>一键筛出重复项。它只提示，关不关由你决定。</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/organize.gif" width="420" alt="自动整理"><br><b>自动整理</b><br>同站点相邻，或按收藏区建标签组，一步完成。</td>
+    <td><img src="docs/demos/snapshots.gif" width="420" alt="工作区快照"><br><b>工作区快照</b><br>保存窗口的标签布局与顺序，随时整组恢复。</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/reminders.gif" width="420" alt="定时提醒"><br><b>定时提醒</b><br>目标从已打开的标签里选，设定时长，到点弹带按钮的通知。</td>
+    <td><img src="docs/demos/analytics.gif" width="420" alt="使用分析"><br><b>使用分析</b><br>站点与逐页的前台时长、激活次数，全部留在本机。</td>
+  </tr>
+</table>
+
 ## 安装
 
 1. 打开 `chrome://extensions`
@@ -131,6 +154,7 @@ node tools/check-imports.mjs  # 校验所有具名导入都有对应导出
 node tools/scan-undefined-refs.mjs  # 反向校验：用了却没导入的标识符（如 Button）
 node tools/make-icons.mjs     # 重新生成图标（自带像素校验，产出透明图会直接失败）
 node tests/run.mjs            # 核心逻辑自动化测试（46 项）
+node tools/record-demo.mjs    # 重新生成功能演示 GIF（需要 Chrome 与 ffmpeg）
 ```
 
 `package.json` 只有脚本、没有依赖，可直接 `npm test` 或 `npm run check`（导入校验 + 未导入标识符扫描 + 测试）。

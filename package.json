@@ -18,6 +18,7 @@
     "check": "node tools/check-imports.mjs && node tools/scan-undefined-refs.mjs && node tests/run.mjs",
     "scan": "node tools/scan-undefined-refs.mjs",
     "serve": "node tools/serve.mjs",
-    "icons": "node tools/make-icons.mjs"
+    "icons": "node tools/make-icons.mjs",
+    "demo": "node tools/record-demo.mjs"
   }
 }

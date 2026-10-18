@@ -29,6 +29,29 @@ Tab Steward는 각 탭이 얼마나 오래 방치되었는지를 측정하고, �
 당신이 입력한 Base URL하고만 통신합니다. 아이콘과 스타일의 출처는
 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)를 보세요.
 
+## 데모
+
+아래 영상은 모두 실제 화면을 녹화한 것입니다. 데이터는 내장 mock 시드(`src/dev/mock-chrome.js`)이며, 누구의 실제 방문 기록도 포함되어 있지 않습니다.
+
+<table>
+  <tr>
+    <td><img src="docs/demos/search.gif" width="420" alt="통합 검색"><br><b>통합 검색</b><br><code>⌘K</code> 팔레트 하나로 탭 / 임시 보관 / 북마크 / 방문 기록 / 최근 닫은 탭을 한꺼번에.</td>
+    <td><img src="docs/demos/stash-drag.gif" width="420" alt="드래그로 임시 보관"><br><b>드래그로 임시 보관</b><br>탭을 컬렉션에 놓으면 그대로 보관됩니다. 접힌 컬렉션도 받으며, 탭은 닫히지 않습니다.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/sleep.gif" width="420" alt="절전"><br><b>절전</b><br>사이트마다 유휴 점수를 표시합니다. 한 개만, 또는 그룹째로.</td>
+    <td><img src="docs/demos/duplicates.gif" width="420" alt="중복 탭"><br><b>중복 탭</b><br>중복만 걸러 봅니다. 알려만 되지 임의로 닫지는 않습니다.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/organize.gif" width="420" alt="자동 정리"><br><b>자동 정리</b><br>사이트 인접 배치 또는 컬렉션별 그룹화를 한 번에.</td>
+    <td><img src="docs/demos/snapshots.gif" width="420" alt="워크스페이스 스냅샷"><br><b>워크스페이스 스냅샷</b><br>창의 탭 구성과 순서를 저장했다가 그대로 복원.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/demos/reminders.gif" width="420" alt="시간 지정 알림"><br><b>시간 지정 알림</b><br>대상은 열려 있는 탭에서 고르고 시간을 설정하면, 버튼이 있는 알림으로 도착합니다.</td>
+    <td><img src="docs/demos/analytics.gif" width="420" alt="사용 분석"><br><b>사용 분석</b><br>사이트별·페이지별 포그라운드 시간과 활성 횟수, 전부 로컬에 남습니다.</td>
+  </tr>
+</table>
+
 ## 설치
 
 1. `chrome://extensions` 열기
@@ -143,6 +166,7 @@ node tools/check-imports.mjs  # 모든 기명 import에 대응하는 export가 �
 node tools/scan-undefined-refs.mjs  # 반대 방향: import하지 않고 쓴 식별자(예: Button)
 node tools/make-icons.mjs     # 아이콘 재생성(픽셀 자기 검사 포함, 투명 이미지가 나오면 즉시 실패)
 node tests/run.mjs            # 핵심 로직 자동 테스트(46개)
+node tools/record-demo.mjs    # 데모 GIF 재생성(Chrome과 ffmpeg 필요)
 ```
 
 `package.json`에는 스크립트만 있고 의존성이 없으니 `npm test`와 `npm run check`(import 검사 +
