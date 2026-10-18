@@ -168,15 +168,16 @@ bootPage(async () => {
     let current = null;
 
     const build = () => {
-      const rows = h("div.col.gap-0-5", { style: { paddingLeft: "8px" } });
+      const rows = h("div.site-card-body.col.gap-0-5");
       if (open) for (const tab of card.tabs) append(rows, TabRow(tab, { actions: tabActions(tab), onOpen: (t) => focusTab(t.id, t.windowId), compact: true }));
 
       const el = h(
-        "div.col",
-        { style: { marginBottom: "2px" } },
+        // Reuse the shared card surface so a site here looks and behaves like a
+        // site card on the Dashboard — and like one collection in the panel.
+        "div.site-card",
         h(
           "div.site-card-head",
-          { style: { borderRadius: "8px", border: "1px solid hsl(var(--border))", padding: "6px 8px", cursor: "pointer" }, onClick: (e) => { if (e.target.closest("button")) return; toggle(); } },
+          { style: { cursor: "pointer" }, onClick: (e) => { if (e.target.closest("button")) return; toggle(); } },
           ico(open ? "chevron-down" : "chevron-right", 13, "collapse-chevron"),
           Favicon({ url: card.tabs[0]?.url, size: 24, tinted: true }),
           h("div.col.flex-1.min-h-0", h("div.site-card-title.truncate", card.site), h("div.site-card-sub", `${card.tabs.length} 个标签 · 闲置度 ${card.avgIdle}`)),

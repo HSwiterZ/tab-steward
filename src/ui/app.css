@@ -299,6 +299,11 @@
 .app-compact .site-card {
   box-shadow: none;
 }
+/* A lifting card inside a dense scrolling popup list just reads as jitter. */
+.app-compact .site-card:hover {
+  transform: none;
+  box-shadow: none;
+}
 .app-compact .site-card-head {
   background: hsl(var(--accent));
   padding: var(--sp-2) var(--sp-2-5);
