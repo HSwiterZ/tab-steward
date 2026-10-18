@@ -281,6 +281,17 @@
 .site-card-body .tab-row:hover {
   background: hsl(var(--accent) / 0.7);
 }
+
+/* The popup stacks cards down a 430px column. At that density the dashboard's
+   near-invisible head gradient reads as one more tab row, so sites bleed into
+   each other — the compact surface gets a solid header band and a stronger edge. */
+.app-compact .site-card {
+  border-color: hsl(var(--border-strong));
+}
+.app-compact .site-card-head {
+  background: hsl(var(--muted));
+  padding: var(--sp-2) var(--sp-2-5);
+}
 .site-card-foot {
   display: flex;
   align-items: center;

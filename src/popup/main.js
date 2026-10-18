@@ -53,7 +53,7 @@ bootPage(async () => {
 
   const banner = h("div.banner.hidden");
   const tabsWrap = h("div", { style: { padding: "0 10px" } }, sectionTabs);
-  const list = h("div.col.gap-1", { style: { flex: "1 1 auto", minHeight: 0, overflowY: "auto", padding: "6px 8px 8px" } });
+  const list = h("div.col.gap-3", { style: { flex: "1 1 auto", minHeight: 0, overflowY: "auto", padding: "6px 8px 8px" } });
 
   // the same panel the Dashboard shows on its right, so counts and contents match
   const stashPanel = renderCollectionsPanel({
