@@ -164,6 +164,13 @@ export function installHoverPreview(row, getUrl) {
   row.addEventListener("mouseleave", hidePreview);
 }
 
+/**
+ * The tab a drag started from. Same-document only, so the live object travels
+ * instead of a re-parsed copy: the collections panel needs its url/title/id to
+ * build a stash item.
+ */
+export const tabDrag = { tab: null };
+
 export function TabRow(tab, opts = {}) {
   const { query = "", selected = false, showWindow = false, showSite = false, locked = false, compact = false } = opts;
   const band = IDLE_BANDS.find((b) => tab.idleScore < b.max) || IDLE_BANDS[IDLE_BANDS.length - 1];
@@ -174,6 +181,7 @@ export function TabRow(tab, opts = {}) {
       dataset: { id: String(tab.id), active: String(!!tab.active), discarded: String(!!tab.discarded), selected: String(selected) },
       tabindex: "0",
       role: "option",
+      draggable: "true",
       title: `${tab.title}\n${tab.url}`,
     },
     opts.checkbox || null,
@@ -207,6 +215,16 @@ export function TabRow(tab, opts = {}) {
   });
   row.addEventListener("keydown", (e) => {
     if (e.key === "Enter") opts.onOpen?.(tab, e);
+  });
+  row.addEventListener("dragstart", (e) => {
+    tabDrag.tab = tab;
+    row.dataset.dragging = "true";
+    e.dataTransfer.effectAllowed = "copyMove";
+    e.dataTransfer.setData("text/plain", tab.url);
+  });
+  row.addEventListener("dragend", () => {
+    tabDrag.tab = null;
+    row.dataset.dragging = "false";
   });
   installHoverPreview(row, () => tab.url);
   return row;

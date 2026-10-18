@@ -3,7 +3,7 @@
  * 暂存区 section, so both surfaces show exactly the same thing.
  */
 import { h, ico, clear, append, toast, Button, IconButton, MenuButton, Badge, Empty, confirmDialog, promptDialog } from "./kit.js";
-import { Favicon, toastError, featureOn } from "./shared.js";
+import { Favicon, toastError, featureOn, tabDrag } from "./shared.js";
 import {
   listCollections,
   createCollection,
@@ -13,6 +13,7 @@ import {
   updateItem,
   moveItemBetween,
   reorderItems,
+  stashTabs,
   openItem,
   openCollection,
   STASH_ID,
@@ -116,7 +117,9 @@ export function renderCollectionsPanel(ctx) {
     iconFolder.classList.toggle("hidden", !fav);
     iconInbox.classList.toggle("hidden", fav);
     titleEl.textContent = fav ? "我的收藏区" : "暂存区";
-    hintEl.textContent = fav ? "拖拽条目到任一收藏区移动；双击条目 = 打开并移出。" : "双击条目 = 打开并移出。";
+    hintEl.textContent = fav
+      ? "拖拽条目到任一收藏区移动；把打开的标签拖到某个收藏区 = 暂存进去，标签不关。双击条目 = 打开并移出。"
+      : "把打开的标签拖进来 = 暂存到暂存区，标签不关。双击条目 = 打开并移出。";
     trashBtn.classList.toggle("hidden", !featureOn("trash"));
     createWrap.classList.toggle("hidden", !fav);
   };
@@ -234,6 +237,36 @@ function renderStashItem(col, item, ctx) {
 // Drag state lives on the panel, not per collection: a drop landing on another
 // collection has to know which row started the drag and where it came from.
 function installCollectionDnd(container, col, ctx, drag) {
+  const collectionEl = container.closest(".side-col-item");
+
+  // A tab dragged in from the list is stashed and kept open — closing it on drop
+  // would be a destructive act the user never asked for.
+  const stashDraggedTab = async () => {
+    const tab = tabDrag.tab;
+    tabDrag.tab = null;
+    if (!tab) return false;
+    try {
+      await stashTabs([tab], { collectionId: col.id, close: false });
+      toast({ title: `已暂存到「${col.name}」`, description: "标签仍留在原处", variant: "success" });
+    } catch (err) {
+      toastError("暂存失败", err?.message);
+    }
+    ctx.refresh();
+    return true;
+  };
+
+  const markTarget = (on, related) => {
+    if (!collectionEl) return;
+    if (on) {
+      for (const other of document.querySelectorAll('.side-col-item[data-drop-active="true"]')) {
+        if (other !== collectionEl) delete other.dataset.dropActive;
+      }
+      collectionEl.dataset.dropActive = "true";
+    } else if (!related || !collectionEl.contains(related)) {
+      delete collectionEl.dataset.dropActive;
+    }
+  };
+
   container.addEventListener("dragstart", (e) => {
     const row = e.target.closest(".stash-item");
     if (!row) return;
@@ -249,14 +282,19 @@ function installCollectionDnd(container, col, ctx, drag) {
   });
 
   container.addEventListener("dragover", (e) => {
-    if (!drag.id) return;
+    if (!drag.id && !tabDrag.tab) return;
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.dropEffect = drag.id ? "move" : "copy";
+    markTarget(true);
   });
 
   container.addEventListener("drop", async (e) => {
-    if (!drag.id) return;
     e.preventDefault();
+    markTarget(false);
+    if (!drag.id) {
+      await stashDraggedTab();
+      return;
+    }
     const over = e.target.closest(".stash-item");
     const toCol = container.dataset.collection;
     const siblings = [...container.querySelectorAll(".stash-item")].filter((n) => n.dataset.id !== drag.id);
@@ -285,16 +323,28 @@ function installCollectionDnd(container, col, ctx, drag) {
   container.addEventListener("dragend", () => {
     drag.id = null;
     drag.from = null;
+    tabDrag.tab = null;
+    markTarget(false);
     for (const n of container.querySelectorAll("[data-dragging]")) n.dataset.dragging = "false";
   });
 
-  // dropping onto an empty collection body
-  const collectionEl = container.closest(".side-col-item");
+  // dropping anywhere on the collection: its header, or an empty body
   collectionEl?.addEventListener("dragover", (e) => {
-    if (drag.id && drag.id !== e.target.closest(".stash-item")?.dataset.id) e.preventDefault();
+    if (!drag.id && !tabDrag.tab) return;
+    if (drag.id && drag.id === e.target.closest(".stash-item")?.dataset.id) return;
+    e.preventDefault();
+    markTarget(true);
   });
+  collectionEl?.addEventListener("dragleave", (e) => markTarget(false, e.relatedTarget));
   collectionEl?.addEventListener("drop", async (e) => {
-    if (!drag.id || e.target.closest(".stash-item")) return;
+    if (e.target.closest(".stash-item")) return;
+    markTarget(false);
+    if (!drag.id) {
+      if (!tabDrag.tab) return;
+      e.preventDefault();
+      await stashDraggedTab();
+      return;
+    }
     e.preventDefault();
     const toCol = container.dataset.collection;
     try {

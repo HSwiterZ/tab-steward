@@ -59,5 +59,4 @@ server.listen(PORT, () => {
   console.log(`popup      http://localhost:${PORT}/src/popup/index.html`);
   console.log(`newtab     http://localhost:${PORT}/src/newtab/index.html`);
   console.log(`options    http://localhost:${PORT}/src/options/index.html`);
-  console.log(`pet        http://localhost:${PORT}/src/pet/index.html`);
 });
