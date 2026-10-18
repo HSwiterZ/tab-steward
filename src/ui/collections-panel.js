@@ -30,6 +30,7 @@ import { formatRelative, hostname } from "../core/utils.js";
  */
 export function renderCollectionsPanel(ctx) {
   const expanded = new Set();
+  const drag = { id: null, from: null };
   const list = h("div.col.gap-1-5");
 
   const refresh = () => {
@@ -74,7 +75,7 @@ export function renderCollectionsPanel(ctx) {
       ),
       isOpen ? body : null
     );
-    if (isOpen) installCollectionDnd(body, col, { refresh });
+    if (isOpen) installCollectionDnd(body, col, { refresh }, drag);
     return el;
   }
 
@@ -230,79 +231,78 @@ function renderStashItem(col, item, ctx) {
 }
 
 /** Cross-collection drag & drop, plus reordering inside one collection. */
-function installCollectionDnd(container, col, ctx) {
-  let dragId = null;
-  let fromCol = null;
-
+// Drag state lives on the panel, not per collection: a drop landing on another
+// collection has to know which row started the drag and where it came from.
+function installCollectionDnd(container, col, ctx, drag) {
   container.addEventListener("dragstart", (e) => {
     const row = e.target.closest(".stash-item");
     if (!row) return;
-    dragId = row.dataset.id;
-    fromCol = row.dataset.collection;
+    drag.id = row.dataset.id;
+    drag.from = row.dataset.collection;
     row.dataset.dragging = "true";
     e.dataTransfer.effectAllowed = "move";
     try {
-      e.dataTransfer.setData("text/plain", dragId);
+      e.dataTransfer.setData("text/plain", drag.id);
     } catch {
       /* ignore */
     }
   });
 
   container.addEventListener("dragover", (e) => {
-    if (!dragId) return;
+    if (!drag.id) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
   });
 
   container.addEventListener("drop", async (e) => {
-    if (!dragId) return;
+    if (!drag.id) return;
     e.preventDefault();
     const over = e.target.closest(".stash-item");
     const toCol = container.dataset.collection;
-    const siblings = [...container.querySelectorAll(".stash-item")].filter((n) => n.dataset.id !== dragId);
+    const siblings = [...container.querySelectorAll(".stash-item")].filter((n) => n.dataset.id !== drag.id);
     let index = -1;
-    if (over && over.dataset.id !== dragId) {
+    if (over && over.dataset.id !== drag.id) {
       const pos = siblings.indexOf(over);
       const before = e.clientY < over.getBoundingClientRect().top + over.getBoundingClientRect().height / 2;
       index = pos + (before ? 0 : 1);
     }
 
     try {
-      if (fromCol === toCol) {
-        await reorderItems(toCol, dragId, index);
+      if (drag.from === toCol) {
+        await reorderItems(toCol, drag.id, index);
       } else {
-        await moveItemBetween(dragId, fromCol, toCol, index);
+        await moveItemBetween(drag.id, drag.from, toCol, index);
       }
       ctx.refresh();
     } catch (err) {
       toastError("移动失败", err?.message);
     } finally {
-      dragId = null;
-      fromCol = null;
+      drag.id = null;
+      drag.from = null;
     }
   });
 
   container.addEventListener("dragend", () => {
-    dragId = null;
-    fromCol = null;
+    drag.id = null;
+    drag.from = null;
     for (const n of container.querySelectorAll("[data-dragging]")) n.dataset.dragging = "false";
   });
 
   // dropping onto an empty collection body
-  const collectionEl = container.closest(".collection");
+  const collectionEl = container.closest(".side-col-item");
   collectionEl?.addEventListener("dragover", (e) => {
-    if (dragId && dragId !== e.target.closest(".stash-item")?.dataset.id) e.preventDefault();
+    if (drag.id && drag.id !== e.target.closest(".stash-item")?.dataset.id) e.preventDefault();
   });
   collectionEl?.addEventListener("drop", async (e) => {
-    if (!dragId || e.target.closest(".stash-item")) return;
+    if (!drag.id || e.target.closest(".stash-item")) return;
     e.preventDefault();
     const toCol = container.dataset.collection;
     try {
-      if (fromCol !== toCol) await moveItemBetween(dragId, fromCol, toCol, -1);
+      if (drag.from !== toCol) await moveItemBetween(drag.id, drag.from, toCol, -1);
       ctx.refresh();
     } finally {
-      dragId = null;
-      fromCol = null;
+      drag.id = null;
+      drag.from = null;
     }
   });
 }

@@ -424,6 +424,10 @@ export function openMenu(anchor, items, opts = {}) {
   const position = () => {
     const rect = anchor.getBoundingClientRect?.() || { left: 0, top: 0, bottom: 0, right: 0, width: 0, height: 0 };
     menu.style.visibility = "hidden";
+    // Leave the flow before measuring: while the menu is a static block it
+    // stretches to the body width, so offsetWidth would read as the viewport and
+    // the align:"end" maths would clamp every menu to the left edge.
+    menu.style.position = "fixed";
     if (!menu.isConnected) layer.appendChild(menu);
     const mw = menu.offsetWidth;
     const mh = menu.offsetHeight;
@@ -443,7 +447,6 @@ export function openMenu(anchor, items, opts = {}) {
       top = above > 8 ? above : Math.max(8, innerHeight - mh - 8);
     }
     top = clamp(top, 8, Math.max(8, innerHeight - mh - 8));
-    menu.style.position = "fixed";
     menu.style.left = `${Math.round(left)}px`;
     menu.style.top = `${Math.round(top)}px`;
     menu.style.visibility = "";
