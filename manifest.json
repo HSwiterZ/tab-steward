@@ -39,8 +39,7 @@
     "notifications",
     "alarms",
     "favicon",
-    "contextMenus",
-    "activeTab"
+    "contextMenus"
   ],
   "optional_host_permissions": ["<all_urls>"],
   "commands": {

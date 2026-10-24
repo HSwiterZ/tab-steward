@@ -19,6 +19,7 @@
     "scan": "node tools/scan-undefined-refs.mjs",
     "serve": "node tools/serve.mjs",
     "icons": "node tools/make-icons.mjs",
-    "demo": "node tools/record-demo.mjs"
+    "demo": "node tools/record-demo.mjs",
+    "pack": "node tools/pack.mjs"
   }
 }

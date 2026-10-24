@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tab Steward · Chrome 标签管理器</title>
+    <style>
+      :root { color-scheme: light dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100vh; display: grid; place-items: center;
+        background: radial-gradient(900px 600px at 75% 10%, rgba(124,58,237,.18), transparent 60%),
+                    radial-gradient(700px 500px at 10% 90%, rgba(79,70,229,.16), transparent 65%),
+                    #f6f5fc;
+        color: #17161f;
+        font: 16px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { color: #ecebf3; background: radial-gradient(900px 600px at 75% 10%, rgba(124,58,237,.28), transparent 60%), radial-gradient(700px 500px at 10% 90%, rgba(79,70,229,.24), transparent 65%), #121118; }
+        .card { background: rgba(26,24,34,.82) !important; border-color: #2a2833 !important; }
+        .lede { color: #a8a5b6 !important; }
+        .meta { color: #8d8a9c !important; }
+      }
+      .card {
+        width: min(620px, calc(100% - 40px)); padding: 40px; border-radius: 20px;
+        background: rgba(255,255,255,.82); border: 1px solid rgba(79,70,229,.14);
+        box-shadow: 0 30px 70px rgba(37,28,96,.14);
+      }
+      .mark { width: 64px; height: 64px; border-radius: 18px; display: block; box-shadow: 0 10px 24px rgba(37,28,96,.22); }
+      h1 { margin: 20px 0 8px; font-size: 34px; line-height: 1.2; letter-spacing: -.8px; }
+      .lede { margin: 0; color: #5b596b; font-size: 16.5px; line-height: 1.75; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+      a.btn {
+        text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 16px;
+        border-radius: 10px; border: 1px solid rgba(79,70,229,.2); color: #4f46e5;
+        background: rgba(255,255,255,.7);
+      }
+      a.btn.primary { color: #fff; background: linear-gradient(135deg, hsl(239 84% 62%), hsl(268 72% 58%)); border-color: transparent; box-shadow: 0 8px 20px rgba(79,70,229,.26); }
+      .meta { margin-top: 22px; font-size: 12.5px; color: #77748a; }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <img class="mark" src="./icon128.png" alt="Tab Steward" />
+      <h1>Tab Steward</h1>
+      <p class="lede">按站点聚合标签，搜索、休眠、暂存与去重在一屏完成。零构建、零遥测，数据只留在你的浏览器里。</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/HSwiterZ/tab-steward">GitHub 仓库</a>
+        <a class="btn" href="./privacy.html">隐私政策</a>
+        <a class="btn" href="https://github.com/HSwiterZ/tab-steward#readme">使用说明</a>
+      </div>
+      <div class="meta">Chrome 116+ · MIT License · 界面目前为中文</div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tab Steward · 隐私政策 / Privacy Policy</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f7fb;
+        --fg: #1b1a22;
+        --muted: #5e5b6b;
+        --line: #e3e1ec;
+        --card: #ffffff;
+        --brand: #5b57e8;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #121118;
+          --fg: #ecebf3;
+          --muted: #a8a5b6;
+          --line: #2a2833;
+          --card: #1a1822;
+          --brand: #a9a5ff;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 15px/1.75 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      }
+      main { max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+      header { margin-bottom: 30px; }
+      .brand {
+        display: inline-flex; align-items: center; gap: 9px; font-weight: 650;
+        color: var(--brand); letter-spacing: .2px; font-size: 13px;
+        text-transform: uppercase;
+      }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, #6a67f0, #9d5ce0); }
+      h1 { margin: 12px 0 6px; font-size: 30px; line-height: 1.25; letter-spacing: -.4px; }
+      .meta { color: var(--muted); font-size: 13px; }
+      .switch { margin-top: 18px; display: flex; gap: 8px; }
+      .switch a {
+        font-size: 12.5px; padding: 5px 11px; border-radius: 999px; text-decoration: none;
+        border: 1px solid var(--line); color: var(--muted); background: var(--card);
+      }
+      section {
+        background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+        padding: 22px 24px; margin-top: 14px;
+      }
+      h2 { margin: 0 0 8px; font-size: 16px; letter-spacing: -.1px; }
+      h3 { margin: 18px 0 4px; font-size: 14px; }
+      p { margin: 8px 0; }
+      ul { margin: 8px 0; padding-left: 20px; }
+      li { margin: 5px 0; }
+      code {
+        font: 12.5px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+        background: rgba(127, 125, 145, .13); padding: 1px 5px; border-radius: 5px;
+      }
+      a { color: var(--brand); }
+      hr { border: 0; border-top: 1px solid var(--line); margin: 34px 0; }
+      .en { color: var(--fg); }
+      .en h1 { font-size: 26px; }
+      strong { font-weight: 650; }
+      footer { color: var(--muted); font-size: 12.5px; margin-top: 30px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="brand"><span class="dot"></span>Tab Steward</div>
+        <h1>隐私政策</h1>
+        <div class="meta">生效日期：2026-10-24 · 适用版本：1.0.0 及以后</div>
+        <nav class="switch"><a href="#zh">中文</a><a href="#en">English</a></nav>
+      </header>
+
+      <div id="zh">
+        <section>
+          <h2>一句话</h2>
+          <p>Tab Steward 没有作者运营的服务器：不收集、不上报、不分析、不投放广告，也不出售任何数据。标签、书签、历史与设置都在你自己的浏览器里。</p>
+        </section>
+
+        <section>
+          <h2>扩展会接触哪些数据</h2>
+          <h3>只在本机读取，用于界面展示与操作</h3>
+          <ul>
+            <li><strong>标签页、窗口与标签组</strong>：用于聚合、排序、切换、移动、休眠与关闭。</li>
+            <li><strong>书签与浏览历史</strong>：只在你使用统一搜索时读取，用于匹配结果，不会上传。</li>
+            <li><strong>最近关闭的标签</strong>：用于「最近关闭」列表与恢复。</li>
+            <li><strong>站点图标</strong>：通过 Chrome 自带的 <code>_favicon</code> 接口显示，不经过作者服务器。</li>
+          </ul>
+          <h3>保存在本机的数据</h3>
+          <ul>
+            <li>收藏区、快照、使用统计、提醒、回收站与全部设置保存在 <code>chrome.storage.local</code>。</li>
+            <li>可选「标签悬停截图」开启后，截图同样只保存在本机。</li>
+            <li>卸载扩展或清除扩展数据会删除这些内容；设置页提供 JSON 备份与导入。</li>
+          </ul>
+          <h3>可选的 LLM 整理助手</h3>
+          <p>该功能<strong>默认关闭</strong>，只有你自己填写服务地址与 API Key 并主动使用后才会发请求。请求直接发往你填写的地址，不经过作者。</p>
+          <ul>
+            <li>请求内容仅含标签标题、域名、闲置分钟数与状态，<strong>不含完整网址、书签或浏览历史</strong>。</li>
+            <li>Base URL 与 API Key 只保存在本机，由你随时修改或清空。</li>
+            <li>该地址对应的服务如何存储与使用请求，取决于该服务的隐私政策。</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>网络请求与共享</h2>
+          <ul>
+            <li>除可选的 LLM 助手外，扩展不向任何外部服务发送数据。</li>
+            <li>不接入统计、崩溃上报、广告或社交 SDK。</li>
+            <li>不向第三方出售、出租或共享数据，也不将数据用于广告、信用评估或借贷。</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>权限与用途</h2>
+          <ul>
+            <li><code>tabs</code> / <code>tabGroups</code>：列出、切换、移动、休眠与关闭标签，管理标签组。</li>
+            <li><code>storage</code> / <code>unlimitedStorage</code>：保存收藏区、快照、统计、提醒与设置；快照与截图可能超过默认配额。</li>
+            <li><code>bookmarks</code> / <code>history</code>：把书签与历史纳入统一搜索，只读。</li>
+            <li><code>sessions</code>：展示并恢复最近关闭的标签。</li>
+            <li><code>notifications</code> / <code>alarms</code>：提醒与重复标签提示。</li>
+            <li><code>contextMenus</code>：右键菜单里的标签操作。</li>
+            <li><code>favicon</code>：显示站点图标。</li>
+            <li><code>&lt;all_urls&gt;</code>（可选）：仅在开启「标签悬停截图」时申请，用于截取当前可见标签，可随时在设置页撤销。</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>有限使用承诺</h2>
+          <p>扩展对上述数据的使用仅限于提供标签管理这一单一用途。不会将数据用于个性化广告、信用、借贷或保险评估，不会出售数据，也不会允许人工读取，除非出于安全、法律合规或你明确请求的必要范围。</p>
+        </section>
+
+        <section>
+          <h2>儿童、变更与联系</h2>
+          <p>本扩展不是面向儿童的产品，也不会主动收集儿童的个人信息。</p>
+          <p>若数据处理方式发生实质变化，会更新本页并修改生效日期。</p>
+          <p>问题或数据相关请求：<a href="https://github.com/HSwiterZ/tab-steward/issues">github.com/HSwiterZ/tab-steward/issues</a>。</p>
+        </section>
+      </div>
+
+      <hr />
+
+      <div id="en" class="en">
+        <header>
+          <div class="brand"><span class="dot"></span>Tab Steward</div>
+          <h1>Privacy Policy</h1>
+          <div class="meta">Effective 2026-10-24 · Applies to version 1.0.0 and later</div>
+        </header>
+
+        <section>
+          <h2>In one sentence</h2>
+          <p>Tab Steward has no developer-operated server. It does not collect, report, analyze, advertise, or sell data. Your tabs, bookmarks, history and settings stay in your browser.</p>
+        </section>
+
+        <section>
+          <h2>What the extension touches</h2>
+          <h3>Read locally to render and operate the UI</h3>
+          <ul>
+            <li><strong>Tabs, windows and tab groups</strong>: to group, sort, switch, move, discard and close tabs.</li>
+            <li><strong>Bookmarks and browsing history</strong>: read only when you use the unified search, to match results; never uploaded.</li>
+            <li><strong>Recently closed tabs</strong>: to show and restore them.</li>
+            <li><strong>Site icons</strong>: served by Chrome's built-in <code>_favicon</code> endpoint, not by the developer.</li>
+          </ul>
+          <h3>Stored on your device</h3>
+          <ul>
+            <li>Collections, snapshots, usage analytics, reminders, the trash and all settings live in <code>chrome.storage.local</code>.</li>
+            <li>If you enable the optional "tab hover screenshot", those images are also stored locally only.</li>
+            <li>Uninstalling the extension or clearing its data removes all of it. The settings page provides JSON backup and import.</li>
+          </ul>
+          <h3>Optional LLM organizer</h3>
+          <p>This feature is <strong>off by default</strong>. It sends a request only after you enter a service URL and API key and use it. Requests go directly to the endpoint you configure, never through the developer.</p>
+          <ul>
+            <li>A request contains tab titles, domains, idle minutes and state only — <strong>no full URLs, bookmarks or browsing history</strong>.</li>
+            <li>The base URL and API key are stored locally and can be changed or cleared at any time.</li>
+            <li>How that endpoint stores or uses the request is governed by that service's own privacy policy.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Network requests and sharing</h2>
+          <ul>
+            <li>Apart from the optional LLM organizer, the extension sends no data to any external service.</li>
+            <li>No analytics, crash reporting, advertising or social SDKs.</li>
+            <li>No sale, rental or sharing of data with third parties, and no use for advertising, credit or lending decisions.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Permissions and their purpose</h2>
+          <ul>
+            <li><code>tabs</code> / <code>tabGroups</code>: list, switch, move, discard and close tabs; manage tab groups.</li>
+            <li><code>storage</code> / <code>unlimitedStorage</code>: save collections, snapshots, analytics, reminders and settings; snapshots and screenshots can exceed the default quota.</li>
+            <li><code>bookmarks</code> / <code>history</code>: include bookmarks and history in unified search, read-only.</li>
+            <li><code>sessions</code>: show and restore recently closed tabs.</li>
+            <li><code>notifications</code> / <code>alarms</code>: reminders and duplicate-tab notices.</li>
+            <li><code>contextMenus</code>: tab actions in the page context menu.</li>
+            <li><code>favicon</code>: show site icons.</li>
+            <li><code>&lt;all_urls&gt;</code> (optional): requested only for "tab hover screenshot" to capture the visible tab; revocable in settings.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Limited Use</h2>
+          <p>The extension uses this data solely to provide its single purpose: tab management. It does not use data for personalized advertising, credit, lending or insurance eligibility, does not sell data, and does not allow humans to read it except when necessary for security, legal compliance, or at your explicit request.</p>
+        </section>
+
+        <section>
+          <h2>Children, changes and contact</h2>
+          <p>This extension is not directed at children and does not knowingly collect children's personal information.</p>
+          <p>If data practices change materially, this page and its effective date will be updated.</p>
+          <p>Questions or data requests: <a href="https://github.com/HSwiterZ/tab-steward/issues">github.com/HSwiterZ/tab-steward/issues</a>.</p>
+        </section>
+      </div>
+
+      <footer>Tab Steward · MIT licensed · <a href="https://github.com/HSwiterZ/tab-steward">github.com/HSwiterZ/tab-steward</a></footer>
+    </main>
+  </body>
+</html>
