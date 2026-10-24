@@ -60,13 +60,17 @@ itself as your collections and windows change.
 
 <img src="docs/context-menu.png" width="420" alt="Chrome context menu with the Tab Steward submenu open">
 
-- **设定提醒** — preset durations, for the page or the whole site
-- **暂存到…** / **暂存并关闭到…** — both list every collection
-- **休眠此标签**
-- **移动到窗口** — the other normal windows
-- **整理所有标签（站点 + 收藏区分组）**
-- **保护此站点（不自动休眠）**
-- **打开 Dashboard**
+Chrome's native menu has no per-item icon field, so each action carries its glyph as an emoji
+character at the start of its title, drawn by the operating system's emoji font. Items that only
+show a value — preset durations, collection names, window titles — stay plain text.
+
+- **⏰ 设定提醒** — preset durations, for the page or the whole site
+- **📥 暂存到…** / **📦 暂存并关闭到…** — both list every collection
+- **🌙 休眠此标签**
+- **🪟 移动到窗口** — the other normal windows
+- **🧹 整理所有标签 (站点 + 收藏区分组)**
+- **🛡️ 保护此站点（不自动休眠）**
+- **📊 打开 Dashboard**
 
 ## Install
 
@@ -81,7 +85,7 @@ itself as your collections and windows change.
 |---|---|---|
 | Toolbar popup | `src/popup/` | Unified search (tabs / stashes / bookmarks / history / recently closed); below it, two columns: current tabs and the stash; collapse by site, stash / sleep / close, duplicate cleanup |
 | Dashboard | `src/dashboard/` | Top bar = logo + search field + feature buttons; main area = current tabs (sorting / group by window / filter chips / window sections / site cards); right column = always-visible collections panel; reminders, snapshots, analytics and trash switch in from the top-bar icons |
-| New tab page | `src/newtab/` | Minimal start page by default; can be switched to the full Dashboard in settings |
+| New tab page | `src/newtab/` | Minimal start page by default; its Dashboard tile swaps the full Dashboard into the same tab — no extra tab, and the address stays the start page instead of switching to a dashboard URL. Settings can also make the Dashboard the default start page |
 | Settings | `src/options/` | Every toggle, plus LLM configuration |
 
 Shortcuts: `Alt+T` popup, `Alt+Shift+T` Dashboard, `Ctrl/⌘+K` unified search.
@@ -182,7 +186,7 @@ node tools/serve.mjs          # local static server, port 8787 by default
 node tools/check-imports.mjs  # every named import has a matching export
 node tools/scan-undefined-refs.mjs  # the reverse: identifiers used but never imported (e.g. Button)
 node tools/make-icons.mjs     # regenerate the icons (pixel self-check; a transparent output fails the run)
-node tests/run.mjs            # automated tests for the core logic (46 cases)
+node tests/run.mjs            # automated tests for the core logic (48 cases)
 node tools/record-demo.mjs    # regenerate the demo GIFs (needs Chrome + ffmpeg)
 ```
 
@@ -224,7 +228,7 @@ unreliably, so verify layout in a headed browser.
 
 ## License
 
-The source is licensed under [MIT](./LICENSE). The path data of the interface icons derives from
-Lucide (ISC), some of it traceable further back to Feather (MIT); the style primitives reference
-shadcn/ui (MIT). Full license terms and copyright notices for all three are in
+The source is licensed under [MIT](./LICENSE). The path data of the interface icons comes from
+Phosphor (MIT); the top-level action glyphs are Fluent Emoji (MIT, Microsoft); the style primitives
+reference shadcn/ui (MIT). Full license terms and copyright notices are in
 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md) and must be kept when redistributing.

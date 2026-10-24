@@ -55,13 +55,16 @@ Tab Steward 会量出每个标签已经闲置多久，把陈旧的休眠掉，�
 
 <img src="docs/context-menu.png" width="420" alt="Chrome 右键菜单与展开的 Tab Steward 子菜单">
 
-- **设定提醒** — 预设时长，可只针对本页或整个站点
-- **暂存到…** / **暂存并关闭到…** — 两者都列出全部收藏区
-- **休眠此标签**
-- **移动到窗口** — 列出其他普通窗口
-- **整理所有标签（站点 + 收藏区分组）**
-- **保护此站点（不自动休眠）**
-- **打开 Dashboard**
+Chrome 的原生菜单没有单项图标字段，所以每个动作把图形写成标题开头的 emoji，由系统的 emoji 字体绘制。
+只展示取值的项——预设时长、收藏区名、窗口标题——保持纯文字。
+
+- **⏰ 设定提醒** — 预设时长，可只针对本页或整个站点
+- **📥 暂存到…** / **📦 暂存并关闭到…** — 两者都列出全部收藏区
+- **🌙 休眠此标签**
+- **🪟 移动到窗口** — 列出其他普通窗口
+- **🧹 整理所有标签 (站点 + 收藏区分组)**
+- **🛡️ 保护此站点（不自动休眠）**
+- **📊 打开 Dashboard**
 
 ## 安装
 
@@ -76,7 +79,7 @@ Tab Steward 会量出每个标签已经闲置多久，把陈旧的休眠掉，�
 |---|---|---|
 | 工具栏弹窗 | `src/popup/` | 统一搜索（标签/暂存/书签/历史/最近关闭）；下方分「当前标签 / 暂存区」两栏；按站点折叠、暂存/休眠/关闭、重复清理 |
 | Dashboard | `src/dashboard/` | 顶栏 = 图标 + 搜索栏 + 常用功能按钮；主区 = 当前标签（排序/按窗口分组/筛选 chips/窗口分区/站点卡片）；右栏 = 常驻收藏区面板；提醒、快照、分析、回收站通过顶栏图标切换 |
-| 新标签页 | `src/newtab/` | 默认极简起始页；可在设置中切换为完整 Dashboard |
+| 新标签页 | `src/newtab/` | 默认极简起始页；点它的 Dashboard 磁贴会在当前标签页内直接换成完整 Dashboard——不开新标签，地址也仍是起始页而不是 Dashboard 页的地址。也可在设置里把 Dashboard 设为默认起始页 |
 | 设置 | `src/options/` | 全部开关与 LLM 配置 |
 
 快捷键：`Alt+T` 弹窗、`Alt+Shift+T` Dashboard、`Ctrl/⌘+K` 统一搜索。
@@ -167,7 +170,7 @@ node tools/serve.mjs          # 本地静态服务，默认 8787 端口
 node tools/check-imports.mjs  # 校验所有具名导入都有对应导出
 node tools/scan-undefined-refs.mjs  # 反向校验：用了却没导入的标识符（如 Button）
 node tools/make-icons.mjs     # 重新生成图标（自带像素校验，产出透明图会直接失败）
-node tests/run.mjs            # 核心逻辑自动化测试（46 项）
+node tests/run.mjs            # 核心逻辑自动化测试（48 项）
 node tools/record-demo.mjs    # 重新生成功能演示 GIF（需要 Chrome 与 ffmpeg）
 ```
 
@@ -203,6 +206,5 @@ chrome --headless=new --window-size=1440,900 --virtual-time-budget=4500 \
 
 ## 许可
 
-源代码以 [MIT](./LICENSE) 授权。界面图标的路径数据衍生自 Lucide（ISC），其中部分图标可继续上溯到
-Feather（MIT）；样式基元参考 shadcn/ui（MIT）。三者的完整授权条件与版权声明见
-[THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)，再分发时请一并保留。
+源代码以 [MIT](./LICENSE) 授权。界面图标的路径数据来自 Phosphor（MIT）；顶栏动作图标为 Fluent Emoji（MIT，Microsoft）；样式基元参考 shadcn/ui（MIT）。
+完整授权条件与版权声明见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)，再分发时请一并保留。
