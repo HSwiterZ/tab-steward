@@ -99,6 +99,11 @@ export async function closeDuplicates({ windowId, scope = "all", keep = "active"
   const toClose = groups.flatMap((g) => g.removable);
   if (!apply || !toClose.length) return { groups, closed: 0, closedTabs: [], undo: null };
 
+  // Closing activates neighbours and can wake a discarded tab, which reloads
+  // while this call is still removing the rest. Silence the prompt for the
+  // whole operation — none of those tabs are newly opened duplicates.
+  await suppressFor(5000);
+
   const closedTabs = [];
   for (const id of toClose) {
     try {
@@ -134,7 +139,7 @@ export async function restoreClosed(closedTabs) {
 }
 
 /**
- * Called by the service worker when a tab finishes loading.
+ * Called by the service worker when a tab navigates to a new address.
  * Returns a verdict the UI turns into a prompt; nothing is closed here. Opening
  * a second copy of a page is a legitimate move (a fresh login form, a scratch
  * comparison), so whether the duplicate goes away stays the user's call.

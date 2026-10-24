@@ -732,6 +732,7 @@ test("重复标签：发现重复只提示，不替用户关掉任何标签", as
   assert.ok(n, "应有一条重复提示");
   assert.equal(n.title, "发现重复标签");
   assert.deepEqual(n.buttons.map((b) => b.title), ["关闭这个并跳转", "切换到已有标签"]);
+  assert.equal(n.requireInteraction, false, "重复提示是通报，不该像提醒一样常驻");
 });
 
 test("重复标签：提示里点「关闭这个并跳转」才关闭，并把焦点交给已有标签", async () => {
@@ -771,6 +772,36 @@ test("重复标签：关闭模块后后台停止检测重复", async () => {
   await openDuplicateTab();
   assert.equal(dupeNotifications().length, 0, "模块关掉后不该再发通知");
   assert.equal(chrome.__state.removedTabs.length, removed);
+});
+
+test("重复标签：批量清理后不把自己刚处理过的标签再报一遍", async () => {
+  await resetDb();
+  await dupes.suppressFor(0);
+  const res = await dupes.closeDuplicates({ keep: "active" });
+  assert.ok(res.closed > 0, "先要真的关掉一些重复标签");
+
+  // Cleanup wakes/reloads neighbours; model the reload that follows it.
+  const url = `https://dup.example/after-clean-${++dupeSeq}`;
+  const existing = await chrome.tabs.create({ url, title: "清理后仍在" });
+  await chrome.tabs.update(existing.id, { active: false });
+  const copy = await chrome.tabs.create({ url, title: "清理后副本" });
+  chrome.tabs.onUpdated.fire(copy.id, { url, status: "complete" }, { ...copy });
+  await new Promise((r) => setTimeout(r, 60));
+  assert.equal(dupeNotifications().length, 0, "清理操作本身不能变成一条新的重复提示");
+});
+
+test("重复标签：页面只是重新加载不会再次提示", async () => {
+  await resetDb();
+  await dupes.suppressFor(0);
+  const url = `https://dup.example/reload-${++dupeSeq}`;
+  const existing = await chrome.tabs.create({ url, title: "已有页面" });
+  await chrome.tabs.update(existing.id, { active: false });
+  const copy = await chrome.tabs.create({ url, title: "同一页的另一份" });
+
+  // Activating a discarded tab reloads it: status complete, same address.
+  chrome.tabs.onUpdated.fire(copy.id, { status: "complete" }, { ...copy });
+  await new Promise((r) => setTimeout(r, 60));
+  assert.equal(dupeNotifications().length, 0, "没有地址变化就不是新打开的页面");
 });
 
 /* ============================ context menu ============================ */

@@ -132,6 +132,25 @@ function moduleRows(on) {
   });
 }
 
+/**
+ * Settings is an extension page; it cannot live at a friendlier URL. What it
+ * can do is stop making browser Back the only exit: focus (or open) the
+ * Dashboard, then close this tab. History is deliberately not used — the
+ * previous entry can be chrome://extensions or anything else that led here.
+ */
+async function backToDashboard() {
+  const me = await chrome.tabs.getCurrent?.().catch?.(() => null);
+  const opener = me?.openerTabId != null ? await chrome.tabs.get(me.openerTabId).catch?.(() => null) : null;
+  if (opener?.id != null) {
+    await chrome.tabs.update(opener.id, { active: true });
+    await chrome.windows.update(opener.windowId, { focused: true }).catch(() => {});
+  } else {
+    await chrome.runtime.sendMessage({ type: "dashboard:open" }).catch?.(() => {});
+  }
+  if (me?.id != null) await chrome.tabs.remove(me.id).catch?.(() => {});
+  else location.href = chrome.runtime.getURL("src/dashboard/index.html");
+}
+
 /* ------------------------------------------------------------------ */
 
 const sleepHint = h("div.setting-desc", { style: { marginTop: "6px" } });
@@ -167,8 +186,8 @@ async function build() {
     section(
       "bell",
       "通知",
-      "提醒与重复标签通知共用这里的设置。",
-      toggle("notifications.sticky", "通知留在屏幕上", "不留在屏幕上时，Windows 可能在你看到之前就收起通知，「关闭这个并跳转」「续时 10 分钟」两个按钮也就来不及点。")
+      "提醒通知可以常驻；重复标签提示 10 秒后自动消失，不会一直挡在屏幕上。",
+      toggle("notifications.sticky", "提醒留在屏幕上", "只影响提醒通知。不留在屏幕上时，Windows 可能在你看到之前就收起「续时 10 分钟」按钮。")
     )
   );
 
@@ -347,7 +366,22 @@ async function build() {
   );
 
   root.innerHTML = "";
-  append(root, h("div.col", { style: { padding: "24px 16px 8px", maxWidth: "760px", margin: "0 auto" } }, h("div.row.gap-2", { style: { marginBottom: "8px" } }, h("img", { src: chrome.runtime.getURL("assets/icon48.png"), style: { width: "26px", height: "26px", borderRadius: "7px" } }), h("div.text-xl.font-semibold", "设置")), wrap));
+  append(
+    root,
+    h(
+      "div.col",
+      { style: { padding: "24px 16px 8px", maxWidth: "760px", margin: "0 auto" } },
+      h(
+        "div.row.gap-2",
+        { style: { marginBottom: "8px", alignItems: "center" } },
+        Button({ label: "返回 Dashboard", icon: "arrow-left", variant: "ghost", size: "sm", onClick: backToDashboard }),
+        h("span.sep-v"),
+        h("img", { src: chrome.runtime.getURL("assets/icon48.png"), style: { width: "26px", height: "26px", borderRadius: "7px" } }),
+        h("div.text-xl.font-semibold", "设置")
+      ),
+      wrap
+    )
+  );
 
   refreshSleepHint();
 }

@@ -1,5 +1,5 @@
 import { h, ico, clear, append, toast, ActionTile, Button, hotkeys } from "../ui/kit.js";
-import { openPalette, onTabsChanged, onStorageChanged, toastError, bootPage, featureOn, paletteHint } from "../ui/shared.js";
+import { openPalette, onTabsChanged, onStorageChanged, toastError, bootPage, featureOn, paletteHint, openSettingsTab } from "../ui/shared.js";
 import { store } from "../core/storage.js";
 import { MOD_KEY } from "../core/utils.js";
 import { dueReminders, gotoReminder, snoozeReminder, markDone } from "../core/reminders.js";
@@ -206,10 +206,7 @@ function buildShell() {
       ActionTile({
         emoji: "gear",
         label: "设置",
-        onClick: () => {
-          if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();
-          else location.href = chrome.runtime.getURL("src/options/index.html");
-        },
+        onClick: () => openSettingsTab(),
       })
     )
   );

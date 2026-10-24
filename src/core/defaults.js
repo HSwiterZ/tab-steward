@@ -31,7 +31,7 @@ export function defaultSettings() {
     modules: defaultModules(),
 
     notifications: {
-      /* 通知留在屏幕上直到处理，「关闭这个并跳转」「续时」两个按钮才可能点得到 */
+      /* 只影响提醒：留在屏幕上直到处理，「续时」按钮才可能点得到 */
       sticky: true,
     },
 

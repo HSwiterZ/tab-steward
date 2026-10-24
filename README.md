@@ -113,12 +113,13 @@ so switching it off would degrade sorting and therefore has no toggle.
 When a duplicate shows up Tab Steward only tells you about it — it never closes a tab on your
 behalf. Opening the same page twice is an ordinary thing to do (a second form, a side-by-side
 comparison), so that call stays yours. Both the notification and the Dashboard banner offer "Close
-this and jump" and "Switch to the existing tab"; ignore them and both tabs stay put. Bulk cleanup
-("Clean duplicates" in the popup and Dashboard) only runs after you click it, and comes with Undo.
+this and jump" and "Switch to the existing tab"; ignore them and both tabs stay put. The prompt
+clears itself after 10 seconds, so it never sits on screen waiting for a click. Bulk cleanup
+("Clean duplicates" in the popup and Dashboard) only runs after you click it, comes with Undo, and
+pauses detection while it closes tabs — a neighbour that reloads is not reported as a new duplicate.
 
-Whether notifications stay on screen (sticky) is a separate setting, on by default: without it,
-Windows can dismiss the notification before you see it, and then "Close this and jump" and "Snooze
-10 minutes" are unclickable.
+Whether notifications stay on screen (sticky) applies to reminders only, on by default: without it,
+Windows can dismiss a reminder before you see it, and then "Snooze 10 minutes" is unclickable.
 
 `chrome.processes` only exists in Chrome's developer channels and does not work on stable, so there
 is no "renderer memory" module and the manifest never requests the `processes` permission.

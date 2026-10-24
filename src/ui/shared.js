@@ -17,6 +17,30 @@ export const featureOn = (id) => isOn(store.get("settings") || {}, id);
 /** One search hint for every surface that opens the palette, reflecting live sources. */
 export const paletteHint = () => `搜索${availableSources().map((s) => s.short).join(" / ")}…`;
 
+/**
+ * Open settings in a tab of its own. `openOptionsPage()` can replace the page
+ * that called it — from the Dashboard that leaves browser Back as the only way
+ * home. Reusing/creating a tab keeps the caller alive, and the settings page's
+ * own return control brings focus back here.
+ */
+export async function openSettingsTab() {
+  const url = chrome.runtime.getURL("src/options/index.html");
+  const existing = (await chrome.tabs.query({ url }).catch(() => [])).find((t) => t.url === url);
+  if (existing) {
+    await chrome.tabs.update(existing.id, { active: true });
+    await chrome.windows.update(existing.windowId, { focused: true }).catch(() => {});
+    return existing;
+  }
+  // Remember the caller so Settings can hand focus back to this exact tab —
+  // including a new-tab page that is showing the Dashboard inline.
+  const me = await chrome.tabs.getCurrent?.().catch?.(() => null);
+  return chrome.tabs.create({
+    url,
+    active: true,
+    ...(me?.id != null ? { openerTabId: me.id } : {}),
+  });
+}
+
 /* ====================================================================== *
  * page bootstrap
  * ====================================================================== */

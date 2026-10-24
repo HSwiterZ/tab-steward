@@ -1,5 +1,5 @@
 import { h, ico, append, installTooltips, watchTheme, ActionTile, hotkeys } from "../ui/kit.js";
-import { Favicon, openPalette, paletteHint } from "../ui/shared.js";
+import { Favicon, openPalette, paletteHint, openSettingsTab } from "../ui/shared.js";
 import { store } from "../core/storage.js";
 import { formatClock, formatDate, hostname, MOD_KEY } from "../core/utils.js";
 
@@ -76,7 +76,7 @@ function renderMinimal() {
         "div.row.gap-2",
         { style: { position: "fixed", top: "16px", right: "16px" } },
         ActionTile({ emoji: "house", label: "打开 Dashboard", onClick: openDashboardInline }),
-        ActionTile({ emoji: "gear", label: "设置", onClick: () => chrome.runtime.openOptionsPage?.() })
+        ActionTile({ emoji: "gear", label: "设置", onClick: () => openSettingsTab() })
       ),
       greet ? h("div.text-lg.muted", greet) : null,
       h("div.col", { style: { alignItems: "center" } }, clock, date),

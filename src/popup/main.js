@@ -1,6 +1,6 @@
 import { h, ico, clear, append, toast, Button, IconButton, ActionTile, Badge, Tabs, Empty, hotkeys } from "../ui/kit.js";
 import { MOD_KEY } from "../core/utils.js";
-import { bootPage, TabRow, Favicon, toastError, openPalette, standardTabActions, openFavoritePicker, onStorageChanged, featureOn, paletteHint } from "../ui/shared.js";
+import { bootPage, TabRow, Favicon, toastError, openPalette, standardTabActions, openFavoritePicker, onStorageChanged, featureOn, paletteHint, openSettingsTab } from "../ui/shared.js";
 import { renderCollectionsPanel } from "../ui/collections-panel.js";
 import { store } from "../core/storage.js";
 import { enrichTabs, buildSiteCards } from "../core/stats.js";
@@ -25,7 +25,7 @@ bootPage(async () => {
     h("div.col.flex-1.min-h-0", h("div.topbar-title", { style: { fontSize: "13.5px" } }, "Tab Steward"), subEl),
     ActionTile({ emoji: "magnifying-glass-tilted-left", label: "全局搜索面板", size: "sm", onClick: () => openPalette({ onPick: handlePick }) }),
     ActionTile({ emoji: "house", label: "打开 Dashboard", size: "sm", onClick: () => chrome.runtime.sendMessage({ type: "dashboard:open" }) }),
-    ActionTile({ emoji: "gear", label: "设置", size: "sm", onClick: () => chrome.runtime.openOptionsPage?.() })
+    ActionTile({ emoji: "gear", label: "设置", size: "sm", onClick: () => openSettingsTab() })
   );
 
   // same interaction as the dashboard: clicking search opens the palette overlay

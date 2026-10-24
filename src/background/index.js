@@ -27,14 +27,8 @@ import { requestSuggestions as llmRequest, applyPlan as llmApply } from "../core
 const DUPE_NID_PREFIX = "dupe-";
 const REMINDER_NID_PREFIX = "reminder-";
 const checkedDupeKeys = new Set();
-
-/**
- * Sticky notifications stay on screen until acted on — that is the only way
- * their action buttons (undo a closed tab, snooze a reminder) are reachable.
- */
-function stickyNotifications() {
-  return (store.get("settings") || {}).notifications?.sticky !== false;
-}
+/** Duplicate prompts are informational, not a pending task: let them go. */
+const DUPE_NOTIFICATION_TTL_MS = 10_000;
 
 /* ====================================================================== *
  * startup
@@ -101,7 +95,10 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
  * ====================================================================== */
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!changeInfo.url && changeInfo.status !== "complete") return;
+  // A URL change is a navigation; a bare "complete" is a reload. Reopening a
+  // discarded tab after cleanup also ends in "complete" with the same address,
+  // and that must not be mistaken for a freshly opened duplicate.
+  if (!changeInfo.url) return;
   if (!tab.url) return;
   const key = `${tabId}:${urlKey(tab.url)}`;
   if (checkedDupeKeys.has(key)) return;
@@ -132,15 +129,24 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         iconUrl: chrome.runtime.getURL("assets/icon128.png"),
         title: "发现重复标签",
         message: `${verdict.title || verdict.existing.title || verdict.existing.url}\n${verdict.location} 已有相同网址的标签`,
-        // Negative priorities are dropped outright on Windows/Linux/macOS, and
-        // action buttons need the notification to stay on screen.
+        // Negative priorities are dropped outright on Windows/Linux/macOS.
         priority: 1,
-        requireInteraction: stickyNotifications(),
+        // Unlike a reminder, this prompt is informational: Windows collapses it
+        // after a few seconds instead of keeping it over every other window.
+        requireInteraction: false,
         // Ignoring the prompt keeps both tabs; that is the default outcome.
         buttons: [{ title: "关闭这个并跳转" }, { title: "切换到已有标签" }],
       })
       .catch(() => null);
   }
+
+  // The OS may leave the collapsed notice in the notification centre. Clear it
+  // as well so "10 seconds" means gone, not just out of sight. unref() only
+  // exists under the Node test stub; in the worker the timer is a number.
+  const ttl = setTimeout(() => {
+    chrome.notifications?.clear?.(nid)?.catch?.(() => {});
+  }, DUPE_NOTIFICATION_TTL_MS);
+  ttl?.unref?.();
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
