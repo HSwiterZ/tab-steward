@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "description": "Tab Steward — Chrome 标签管理器（零构建、零依赖）",
+  "description": "Tab Steward — 浏览器标签管理器（零构建、零依赖）",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HSwiterZ/tab-steward.git"

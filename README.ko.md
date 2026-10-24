@@ -1,4 +1,4 @@
-# Tab Steward — Chrome 탭 관리자
+# Tab Steward — 브라우저 탭 관리자
 
 [![check](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml/badge.svg)](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml)
 
@@ -58,9 +58,9 @@ Tab Steward는 각 탭이 얼마나 오래 방치되었는지를 측정하고, �
 오른쪽 클릭하면 “Tab Steward — 标签页管理器” 항목이 생기고(아래 사진의 테두리 부분), 하위 메뉴는
 컬렉션과 창이 바뀔 때마다 자동으로 다시 만들어집니다.
 
-<img src="docs/context-menu.png" width="420" alt="Chrome 오른쪽 클릭 메뉴와 펼쳐진 Tab Steward 하위 메뉴">
+<img src="docs/context-menu.png" width="420" alt="브라우저 오른쪽 클릭 메뉴와 펼쳐진 Tab Steward 하위 메뉴">
 
-Chrome의 네이티브 메뉴에는 항목별 아이콘 필드가 없어서, 각 동작은 제목 맨 앞에 emoji 한 글자로
+브라우저의 네이티브 메뉴에는 항목별 아이콘 필드가 없어서, 각 동작은 제목 맨 앞에 emoji 한 글자로
 그림을 싣고 OS의 emoji 폰트가 이를 그립니다. 값만 나열하는 항목(미리 정의된 시간, 컬렉션 이름,
 창 제목)은 일반 텍스트 그대로입니다.
 
@@ -74,8 +74,8 @@ Chrome의 네이티브 메뉴에는 항목별 아이콘 필드가 없어서, 각
 
 ## 설치
 
-1. `chrome://extensions` 열기
-2. 오른쪽 위의 **개발자 모드** 켜기
+1. `chrome://extensions`(Chrome) 또는 `edge://extensions`(Edge) 열기
+2. **개발자 모드** 켜기 (Chrome은 오른쪽 위, Edge는 왼쪽 사이드바 아래)
 3. **압축 풀리지 않은 확장 프로그램 로드하기**를 눌러 이 폴더 선택
 4. 툴바에 아이콘이 보이면 완료 — 클릭하면 팝업, `Alt+Shift+T`는 대시보드
 
@@ -209,7 +209,7 @@ import 누락 식별자 스캔 + 테스트)이 그대로 동작합니다. 테스
 색, 모서리 반지름, 여백, 그림자, 애니메이션 시간은 모두 `src/ui/styles/tokens.css`에 모으고,
 라이트/다크는 토큰 값만 바꿉니다. 브랜드 색은 indigo→violet 그라데이션이며, `--primary`는 동작과
 구조(주 버튼, 스위치, 체크박스, 활성 탭 밑줄, 필터 칩, 진행률 바, 현재 행 표시)에만 쓰고
-`--gradient-brand`는 아이콘과 통계 카드 테두리에 씁니다. 사이트 favicon 문자 타일과 Chrome 탭 그룹 색은
+`--gradient-brand`는 아이콘과 통계 카드 테두리에 씁니다. 사이트 favicon 문자 타일과 브라우저 탭 그룹 색은
 데이터 쪽 색이므로 `TILE_HUES`는 225–285 색상 대역을 의도적으로 피합니다. 사이트 아이콘이 UI 컨트롤처럼
 보이지 않게 하기 위해서입니다. UI를 추가할 때는 토큰을 읽으세요. 색이나 `ms` 값을 하드코딩하지 마세요.
 

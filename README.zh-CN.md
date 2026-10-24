@@ -1,4 +1,4 @@
-# Tab Steward — Chrome 标签管理器
+# Tab Steward — 浏览器标签管理器
 
 [![check](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml/badge.svg)](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml)
 
@@ -53,9 +53,9 @@ Tab Steward 会量出每个标签已经闲置多久，把陈旧的休眠掉，�
 唯一没法录进片子的功能：这个菜单属于浏览器，不属于页面。任意网页上右键都有「Tab Steward — 标签页管理器」
 总入口（下图框出），子菜单会随收藏区与窗口的变化自动重建。
 
-<img src="docs/context-menu.png" width="420" alt="Chrome 右键菜单与展开的 Tab Steward 子菜单">
+<img src="docs/context-menu.png" width="420" alt="浏览器右键菜单与展开的 Tab Steward 子菜单">
 
-Chrome 的原生菜单没有单项图标字段，所以每个动作把图形写成标题开头的 emoji，由系统的 emoji 字体绘制。
+浏览器的原生菜单没有单项图标字段，所以每个动作把图形写成标题开头的 emoji，由系统的 emoji 字体绘制。
 只展示取值的项——预设时长、收藏区名、窗口标题——保持纯文字。
 
 - **⏰ 设定提醒** — 预设时长，可只针对本页或整个站点
@@ -68,8 +68,8 @@ Chrome 的原生菜单没有单项图标字段，所以每个动作把图形写�
 
 ## 安装
 
-1. 打开 `chrome://extensions`
-2. 右上角开启「开发者模式」
+1. 打开 `chrome://extensions`（Chrome）或 `edge://extensions`（Edge）
+2. 开启「开发者模式」：Chrome 在右上角，Edge 在左侧栏底部
 3. 点击「加载已解压的扩展程序」，选择本目录
 4. 工具栏出现图标即完成；点击图标打开弹窗，`Alt+Shift+T` 打开 Dashboard
 
@@ -193,7 +193,7 @@ node tools/record-demo.mjs    # 重新生成功能演示 GIF（需要 Chrome 与
 颜色、圆角、间距、阴影与动效时长全部集中在 `src/ui/styles/tokens.css`，亮暗两套只改令牌值。
 品牌色是靛蓝→紫渐变：`--primary` 只用于行动与结构（主按钮、开关、复选框、激活标签下划线、
 筛选 chip、进度条、当前行指示条），`--gradient-brand` 用于图标与统计卡描边。
-站点 favicon 字母块与 Chrome 标签组色属于数据色，`TILE_HUES` 刻意避开 225–285 色相带，
+站点 favicon 字母块与浏览器的标签组色属于数据色，`TILE_HUES` 刻意避开 225–285 色相带，
 以免站点图标看起来像界面控件。加新界面时取令牌，不要写死颜色或 `ms` 时长。
 
 无头截图示例：

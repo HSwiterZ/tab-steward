@@ -1,4 +1,4 @@
-# Tab Steward — Chrome タブマネージャー
+# Tab Steward — ブラウザのタブマネージャー
 
 [![check](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml/badge.svg)](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml)
 
@@ -58,9 +58,9 @@ Tab Steward は各タブがどれだけ放置されているかを計測し、�
 「Tab Steward — 标签页管理器」の項目が現れ（下の画像で枠を付けた部分）、サブメニューはコレクションや
 ウィンドウの変化にあわせて自動で再構築されます。
 
-<img src="docs/context-menu.png" width="420" alt="Chrome の右クリックメニューと展開された Tab Steward のサブメニュー">
+<img src="docs/context-menu.png" width="420" alt="ブラウザの右クリックメニューと展開された Tab Steward のサブメニュー">
 
-Chrome のネイティブメニューには項目ごとのアイコンフィールドがないため、各アクションはタイトルの
+ブラウザのネイティブメニューには項目ごとのアイコンフィールドがないため、各アクションはタイトルの
 先頭に emoji を 1 文字置き、OS の emoji フォントで描画しています。値を並べるだけの項目
 （プリセット時間、コレクション名、ウィンドウ名）はプレーンなテキストのままです。
 
@@ -74,8 +74,8 @@ Chrome のネイティブメニューには項目ごとのアイコンフィー�
 
 ## インストール
 
-1. `chrome://extensions` を開く
-2. 右上の「デベロッパーモード」を ON にする
+1. `chrome://extensions`（Chrome）または `edge://extensions`（Edge）を開く
+2. 「デベロッパーモード」を ON にする（Chrome は右上、Edge は左サイドバーの下）
 3. 「圧縮されていない拡張機能を読み込む」でこのフォルダを選択
 4. ツールバーにアイコンが出たら完了。クリックでポップアップ、`Alt+Shift+T` で Dashboard
 
@@ -212,7 +212,7 @@ Windows/Linux/macOS それぞれの実際の挙動で拒否）。だからこそ
 ライト／ダークはトークン値の差し替えだけ。ブランドカラーは indigo→violet のグラデーションで、
 `--primary` はアクションと構造（プライマリボタン、スイッチ、チェックボックス、アクティブタブの
 下線、フィルターチップ、プログレスバー、現在行のインジケーター）に限定、`--gradient-brand` は
-アイコンと統計カードの罫線に使います。サイトの favicon のレタータイルと Chrome のタブグループ色は
+アイコンと統計カードの罫線に使います。サイトの favicon のレタータイルとブラウザのタブグループ色は
 データ側の色なので、`TILE_HUES` は意図的に色相 225–285 の帯を避けています。サイトのアイコンが
 UI コントロールに見えないようにするためです。UI を追加するときはトークンを読み、色や `ms` 値を
 直書きしないでください。

@@ -1,4 +1,4 @@
-# Tab Steward — Chrome tab manager
+# Tab Steward — browser tab manager
 
 [![check](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml/badge.svg)](https://github.com/HSwiterZ/tab-steward/actions/workflows/ci.yml)
 
@@ -58,9 +58,9 @@ The one feature no clip can show: the menu belongs to the browser, not the page.
 context menu carries a "Tab Steward — 标签页管理器" entry (boxed below), and its submenu rebuilds
 itself as your collections and windows change.
 
-<img src="docs/context-menu.png" width="420" alt="Chrome context menu with the Tab Steward submenu open">
+<img src="docs/context-menu.png" width="420" alt="Browser context menu with the Tab Steward submenu open">
 
-Chrome's native menu has no per-item icon field, so each action carries its glyph as an emoji
+The browser's native menu has no per-item icon field, so each action carries its glyph as an emoji
 character at the start of its title, drawn by the operating system's emoji font. Items that only
 show a value — preset durations, collection names, window titles — stay plain text.
 
@@ -74,8 +74,8 @@ show a value — preset durations, collection names, window titles — stay plai
 
 ## Install
 
-1. Open `chrome://extensions`
-2. Turn on **Developer mode** (top right)
+1. Open `chrome://extensions` (Chrome) or `edge://extensions` (Edge)
+2. Turn on **Developer mode** (top right in Chrome, bottom of the left sidebar in Edge)
 3. Click **Load unpacked** and select this folder
 4. The toolbar icon appears — click it for the popup, press `Alt+Shift+T` for the Dashboard
 
@@ -212,7 +212,7 @@ Colours, radii, spacing, shadows and animation durations all live in `src/ui/sty
 light and dark themes only change token values. The brand colour is an indigo→violet gradient:
 `--primary` is reserved for action and structure (primary buttons, switches, checkboxes, the active
 tab underline, filter chips, progress bars, the current-row indicator), while `--gradient-brand` is
-used for icons and the stat-card border. Site favicon letter tiles and Chrome's tab-group colours are
+used for icons and the stat-card border. Site favicon letter tiles and the browser's tab-group colours are
 data colours, so `TILE_HUES` deliberately avoids the 225–285 hue band to stop site icons from
 looking like interface controls. When you add UI, read tokens — don't hardcode colours or `ms`
 durations.
