@@ -190,7 +190,7 @@ bootPage(async () => {
                   : IconButton({ icon: "moon", iconSize: 16, label: "该站点没有可休眠的标签", size: "xs", disabled: true }),
               ]
             : []),
-          IconButton({ icon: "x", iconSize: 16, label: "关闭该站点", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs(card.tabs.map((t) => t.id)); if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "Chrome 拒绝了关闭请求，其余标签已关闭。"); render(); } })
+          IconButton({ icon: "x", iconSize: 16, label: "关闭该站点", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs(card.tabs.map((t) => t.id)); if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "浏览器拒绝了关闭请求，其余标签已关闭。"); render(); } })
         ),
         open ? rows : null
       );

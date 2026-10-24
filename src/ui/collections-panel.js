@@ -174,7 +174,7 @@ function collectionMenu(col, refresh) {
       },
     },
     {
-      label: "归档为 Chrome 书签",
+      label: "归档为浏览器书签",
       icon: "bookmark",
       disabled: !count,
       onSelect: async () => {

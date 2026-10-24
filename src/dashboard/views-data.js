@@ -548,7 +548,7 @@ export async function renderSnapshots(ctx) {
       Button({ label: "保存当前窗口", icon: "camera", onClick: async () => { const s = await captureSnapshot({ scope: "current" }); toast({ title: "快照已保存", description: s.name, variant: "success" }); ctx.refresh(); } }),
       Button({ label: "保存全部窗口", icon: "package", variant: "outline", onClick: async () => { const s = await captureSnapshot({ scope: "all" }); toast({ title: "快照已保存", description: `${s.name} · ${s.windowCount} 窗口 ${s.tabCount} 标签`, variant: "success" }); ctx.refresh(); } }),
       h("span.flex-1"),
-      h("span.muted.text-xs", "快照会记录窗口名称与位置、标签顺序、固定状态和 Chrome 分组。")
+      h("span.muted.text-xs", "快照会记录窗口名称与位置、标签顺序、固定状态和标签组。")
     )
   );
 

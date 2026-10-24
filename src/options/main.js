@@ -327,7 +327,7 @@ async function build() {
       "wand",
       "自动整理",
       "",
-      toggle("organize.autoGroupByCollection", "收藏时同步 Chrome 分组", "把标签加入收藏区时，顺手把它归入同名 Chrome 标签组。"),
+      toggle("organize.autoGroupByCollection", "收藏时同步标签组", "把标签加入收藏区时，顺手把它归入同名标签组。"),
       toggle("organize.groupColorCycle", "分组颜色按名称固定", "同名分组始终使用同一种颜色。")
     )
   );

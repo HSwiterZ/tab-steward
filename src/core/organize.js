@@ -208,7 +208,7 @@ export async function buildSuggestions({ idleThresholdMinutes = 60, minDupes = 2
       kind: "group",
       icon: "layers",
       title: `${groupable.length} 个已收藏的标签还没归入分组`,
-      detail: "按收藏区归属创建 Chrome 标签组",
+      detail: "按收藏区归属创建标签组",
       action: { type: "organize.groups", payload: { scope: "all" } },
       count: groupable.length,
     });

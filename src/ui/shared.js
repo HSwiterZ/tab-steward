@@ -129,7 +129,7 @@ export function IdleBadge({ idleScore, idleMs, discarded }) {
 
 export function groupChip(title, color) {
   if (!title && !color) return null;
-  return h("span.group-chip", { style: { "--tg-color": `var(--tg-${color || "grey"})` }, title: "Chrome 标签组" }, title || "未命名分组");
+  return h("span.group-chip", { style: { "--tg-color": `var(--tg-${color || "grey"})` }, title: "标签组" }, title || "未命名分组");
 }
 
 export function stateChips(tab) {
@@ -357,7 +357,7 @@ export function standardTabActions(tab, { locked = false, onDone, onFavorite, on
     );
   }
   actions.push(
-    IconButton({ icon: "x", iconSize: 16, label: "关闭", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs([tab.id]); if (r.failed.length) toastError("这个标签没能关闭", "Chrome 拒绝了关闭请求。"); onDone?.(); } })
+    IconButton({ icon: "x", iconSize: 16, label: "关闭", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs([tab.id]); if (r.failed.length) toastError("这个标签没能关闭", "浏览器拒绝了关闭请求。"); onDone?.(); } })
   );
   actions.push(
     MenuButton({

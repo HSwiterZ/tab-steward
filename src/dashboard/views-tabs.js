@@ -389,7 +389,7 @@ export async function renderTabsView(ctx) {
           const ok = await confirmDialog({ title: `关闭 ${card.site} 的 ${card.tabs.length} 个标签？`, description: "关闭后可在最近关闭中恢复。", confirmLabel: "关闭", danger: true });
           if (!ok) return;
           const r = await closeTabs(card.tabs.map((t) => t.id));
-          if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "Chrome 拒绝了关闭请求，其余标签已关闭。");
+          if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "浏览器拒绝了关闭请求，其余标签已关闭。");
           render();
         } },
     ];
@@ -413,7 +413,7 @@ export async function renderTabsView(ctx) {
     append(
       batchBar,
       Badge({ label: `已选 ${selected.size}`, variant: "primary" }),
-      Button({ label: "关闭所选", icon: "x", size: "xs", variant: "destructive", onClick: async () => { const r = await closeTabs(ids); if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "Chrome 拒绝了关闭请求，其余标签已关闭。"); selected.clear(); render(); } }),
+      Button({ label: "关闭所选", icon: "x", size: "xs", variant: "destructive", onClick: async () => { const r = await closeTabs(ids); if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "浏览器拒绝了关闭请求，其余标签已关闭。"); selected.clear(); render(); } }),
       Button({ label: "休眠所选", icon: "moon", size: "xs", onClick: async () => { const r = await sleepTabs(ids); toast({ title: `已休眠 ${r.slept} 个` }); selected.clear(); render(); } }),
       Button({ label: "暂存所选", icon: "inbox", size: "xs", onClick: async () => { const tabs = await chrome.tabs.query({}); await stashTabs(tabs.filter((t) => selected.has(t.id)), { close: false }); selected.clear(); render(); } }),
       Button({ label: "移至新窗口", icon: "app-window", size: "xs", onClick: async () => { await moveTabsToNewWindow(ids); selected.clear(); render(); } }),
