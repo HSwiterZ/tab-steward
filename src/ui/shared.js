@@ -99,7 +99,7 @@ export function IdleBadge({ idleScore, idleMs, discarded }) {
     "span.row.gap-1",
     { title: `闲置 ${formatRelative(Date.now() - idleMs)} · 闲置度 ${idleScore}` },
     h("span.idle-bar", h("span.idle-bar-fill", { class: `tone-${band.tone}`, style: { width: `${Math.max(6, idleScore)}%` } })),
-    discarded ? h("span.badge.badge-muted", "休眠") : null
+    discarded ? Badge({ label: "休眠", variant: "muted", emoji: "zzz" }) : null
   );
 }
 
@@ -111,10 +111,10 @@ export function groupChip(title, color) {
 export function stateChips(tab) {
   const chips = [];
   if (tab.pinned) chips.push(Badge({ label: "固定", variant: "secondary", icon: "pin" }));
-  if (tab.audible) chips.push(Badge({ label: "有声", variant: "warning", icon: "volume" }));
-  if (tab.discarded) chips.push(Badge({ label: "已休眠", variant: "muted", icon: "moon" }));
-  if (tab.protectedSite) chips.push(Badge({ label: "受保护", variant: "info", icon: "shield-check" }));
-  if (featureOn("duplicates") && tab.dupeCount) chips.push(Badge({ label: `重复 ×${tab.dupeCount + 1}`, variant: "destructive", icon: "copy" }));
+  if (tab.audible) chips.push(Badge({ label: "有声", variant: "secondary", icon: "volume" }));
+  if (tab.discarded) chips.push(Badge({ label: "已休眠", variant: "muted", emoji: "zzz" }));
+  if (tab.protectedSite) chips.push(Badge({ label: "受保护", variant: "secondary", icon: "shield-check" }));
+  if (featureOn("duplicates") && tab.dupeCount) chips.push(Badge({ label: `重复 ×${tab.dupeCount + 1}`, variant: "warning", icon: "copy" }));
   return chips;
 }
 
@@ -204,7 +204,7 @@ export function TabRow(tab, opts = {}) {
     h(
       "div.tab-actions",
       ...(locked
-        ? [IconButton({ icon: "lock", label: "卡片已锁定，操作被禁用", size: "xs", disabled: true })]
+        ? [IconButton({ emoji: "locked", label: "卡片已锁定，操作被禁用", size: "xs", disabled: true })]
         : opts.actions || [])
     )
   );
@@ -285,16 +285,16 @@ export function SiteCard(card, opts = {}) {
           Badge({ label: `${card.tabs.length} 个`, variant: "secondary" }),
           Badge({ label: `闲置度 ${card.avgIdle}`, variant: band.tone === "secondary" ? "outline" : band.tone }),
           Badge({ label: `最近 ${formatShortDuration(Math.max(0, Date.now() - card.lastVisitAt))}`, variant: "outline" }),
-          card.discarded ? Badge({ label: `${card.discarded} 休眠`, variant: "muted", icon: "moon" }) : null,
-          card.audible ? Badge({ label: "有声", variant: "warning", icon: "volume" }) : null,
-          card.pinnedSite ? Badge({ label: "置顶", variant: "info", icon: "pin" }) : null
+          card.discarded ? Badge({ label: `${card.discarded} 休眠`, variant: "muted", emoji: "zzz" }) : null,
+          card.audible ? Badge({ label: "有声", variant: "secondary", icon: "volume" }) : null,
+          card.pinnedSite ? Badge({ label: "置顶", variant: "secondary", icon: "pin" }) : null
         )
       ),
       card.locked
-        ? IconButton({ icon: "lock", label: "已锁定：关闭/休眠被禁用", size: "xs", variant: "ghost", onClick: (e) => { e.stopPropagation(); opts.onUnlock?.(card); } })
+        ? IconButton({ emoji: "locked", label: "已锁定：关闭/休眠被禁用", size: "xs", variant: "ghost", onClick: (e) => { e.stopPropagation(); opts.onUnlock?.(card); } })
         : null,
       MenuButton({
-        icon: "ellipsis",
+        emoji: "gear",
         label: `${card.site} 操作`,
         size: "xs",
         items: () => opts.cardMenu?.(card) || [],
@@ -319,23 +319,25 @@ export function SiteCard(card, opts = {}) {
  * ====================================================================== */
 
 export function standardTabActions(tab, { locked = false, onDone, onFavorite, onResetIdle } = {}) {
-  if (locked) return [IconButton({ icon: "lock", label: "卡片已锁定，操作被禁用", size: "xs", disabled: true })];
+  if (locked) return [IconButton({ emoji: "locked", label: "卡片已锁定，操作被禁用", size: "xs", disabled: true })];
   const actions = [
-    IconButton({ icon: "crosshair", label: "聚焦此标签", size: "xs", onClick: async (e) => { e.stopPropagation(); await focusTab(tab.id, tab.windowId); onDone?.(); } }),
+    IconButton({ emoji: "bullseye", label: "聚焦此标签", size: "xs", onClick: async (e) => { e.stopPropagation(); await focusTab(tab.id, tab.windowId); onDone?.(); } }),
   ];
   if (featureOn("sleep")) {
     actions.push(
       tab.discarded
-        ? IconButton({ icon: "play", label: "唤醒", size: "xs", onClick: async (e) => { e.stopPropagation(); await wakeTabs([tab.id]); onDone?.(); } })
-        : IconButton({ icon: "moon", label: "休眠", size: "xs", disabled: !tab.isSleepable, onClick: async (e) => { e.stopPropagation(); await sleepTabs([tab.id]); onDone?.(); } })
+        ? IconButton({ emoji: "play-button", label: "唤醒", size: "xs", onClick: async (e) => { e.stopPropagation(); await wakeTabs([tab.id]); onDone?.(); } })
+        : tab.isSleepable
+          ? IconButton({ emoji: "crescent-moon", label: "休眠", size: "xs", onClick: async (e) => { e.stopPropagation(); await sleepTabs([tab.id]); onDone?.(); } })
+          : IconButton({ icon: "moon", iconSize: 16, label: "不可休眠：已固定、受保护或正在使用", size: "xs", disabled: true })
     );
   }
   actions.push(
-    IconButton({ icon: "x", label: "关闭", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs([tab.id]); if (r.failed.length) toastError("这个标签没能关闭", "Chrome 拒绝了关闭请求。"); onDone?.(); } })
+    IconButton({ icon: "x", iconSize: 16, label: "关闭", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs([tab.id]); if (r.failed.length) toastError("这个标签没能关闭", "Chrome 拒绝了关闭请求。"); onDone?.(); } })
   );
   actions.push(
     MenuButton({
-      icon: "ellipsis",
+      emoji: "gear",
       label: "更多操作",
       size: "xs",
       items: () => [

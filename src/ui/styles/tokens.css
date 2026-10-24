@@ -83,6 +83,7 @@
   --warning-foreground: 0 0% 100%;
   --info: 217 91% 55%;
   --info-foreground: 0 0% 100%;
+  --dormant: 252 64% 46%;
   --border: 228 18% 87%;
   --border-strong: 228 16% 78%;
   --input: 228 18% 87%;
@@ -127,6 +128,7 @@
   --warning-foreground: 32 60% 12%;
   --info: 213 90% 66%;
   --info-foreground: 215 50% 12%;
+  --dormant: 252 72% 74%;
   --border: 229 16% 22%;
   --border-strong: 229 14% 32%;
   --input: 229 16% 26%;

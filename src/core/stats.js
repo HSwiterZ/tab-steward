@@ -119,7 +119,7 @@ export const IDLE_BANDS = [
   { id: "low", label: "低闲置", max: 45, tone: "info" },
   { id: "medium", label: "中闲置", max: 70, tone: "secondary" },
   { id: "high", label: "高闲置", max: 90, tone: "warning" },
-  { id: "severe", label: "极高闲置", max: 101, tone: "destructive" },
+  { id: "severe", label: "极高闲置", max: 101, tone: "warning" },
 ];
 
 /**

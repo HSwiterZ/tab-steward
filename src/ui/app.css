@@ -142,6 +142,13 @@
   min-height: 0;
   overflow-y: auto;
   padding: var(--sp-4);
+  /* The page already has a scrollbar at the window edge; a second one against
+     the site grid reads as a seam down the middle. Wheel / trackpad / keyboard
+     scrolling still works, the thumb just isn't painted. */
+  scrollbar-width: none;
+}
+.main-scroll::-webkit-scrollbar {
+  display: none;
 }
 .main-scroll.tight {
   padding: 0;
@@ -389,7 +396,7 @@
   align-items: center;
   gap: 3px;
   flex-shrink: 0;
-  opacity: 0.62;
+  opacity: 0.72;
   transition: opacity var(--duration-1) var(--ease-out);
 }
 .tab-row:hover .tab-actions,
@@ -397,16 +404,141 @@
 .tab-row[data-selected="true"] .tab-actions {
   opacity: 1;
 }
-.tab-actions .btn {
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--background));
+
+/* ============================ icon button tiles ============================
+   Vector glyphs are Phosphor duotone, so they already carry their own second
+   tone; the tile only has to say what kind of verb this is — brand for the
+   neutral ones, green for play, amber for the pinned/locked/muted set, red for
+   what really loses data. Emoji glyphs carry their own colour, so their tile
+   stays neutral: a red dartboard on a red chip, or a gold moon on a violet
+   chip, reads as two competing signals. The row's 0.72 resting opacity keeps
+   four colourful verbs from turning into confetti. */
+.btn-icon {
+  border: 1px solid transparent;
+  background: hsl(var(--primary) / 0.09);
+  color: hsl(var(--foreground));
+  transition: background var(--duration-1) var(--ease-out), border-color var(--duration-1) var(--ease-out),
+    color var(--duration-1) var(--ease-out), transform var(--duration-1) var(--ease-out);
 }
-.tab-actions .btn:hover {
+.btn-icon:hover:not(:disabled) {
+  background: hsl(var(--primary) / 0.17);
+  border-color: hsl(var(--primary) / 0.22);
+}
+.btn-icon:disabled {
+  background: hsl(var(--muted) / 0.55);
+  color: hsl(var(--muted-foreground));
+}
+/* Red is reserved for what actually loses data (trash, 回收站). Closing a tab is
+   reversible by just opening it again, so it stays neutral until you hover it —
+   otherwise every card head ships a red tile and the whole UI shouts. */
+.btn-icon:has(svg[data-icon="trash"]) {
+  background: hsl(var(--destructive) / 0.09);
+  color: hsl(var(--destructive));
+}
+.btn-icon:has(svg[data-icon="trash"]):hover:not(:disabled) {
+  background: hsl(var(--destructive) / 0.16);
+  border-color: hsl(var(--destructive) / 0.24);
+}
+/* Closing a tab is reversible, so it stays a quiet monochrome ✕ that only
+   turns red under the pointer. At 16px the emoji cross reads as a fat red
+   block and outshouts the verbs that actually change state. */
+.btn-icon:has(svg[data-icon="x"]) {
+  background: hsl(var(--secondary) / 0.6);
+  border-color: transparent;
+}
+.btn-icon:has(svg[data-icon="x"]):hover:not(:disabled) {
+  background: hsl(var(--destructive) / 0.14);
+  border-color: hsl(var(--destructive) / 0.22);
+  color: hsl(var(--destructive));
+}
+.btn-icon:has(svg[data-icon="play"]) {
+  background: hsl(var(--success) / 0.12);
+  color: hsl(var(--success));
+}
+.btn-icon:has(svg[data-icon="play"]):hover:not(:disabled) {
+  background: hsl(var(--success) / 0.2);
+  border-color: hsl(var(--success) / 0.26);
+}
+/* Sleep is the counterpart of wake, so it wears the sleeping state's violet
+   instead of the default brand tint. */
+.btn-icon:has(svg[data-icon="moon"]):not(:disabled) {
+  background: hsl(var(--dormant) / 0.12);
+  color: hsl(var(--dormant));
+}
+.btn-icon:has(svg[data-icon="moon"]):hover:not(:disabled) {
+  background: hsl(var(--dormant) / 0.2);
+  border-color: hsl(var(--dormant) / 0.26);
+}
+/* A greyed-out emoji crescent loses so much contrast on a tinted chip that it
+   stops reading as a moon, so the disabled sleep slot uses the vector glyph.
+   It keeps the muted chip but takes the body ink: at the row's 0.72 resting
+   opacity a muted-foreground moon still washed out. */
+.btn-icon:has(svg[data-icon="moon"]):disabled {
+  background: hsl(var(--secondary) / 0.45);
+  color: hsl(var(--foreground));
+}
+.btn-icon:has(svg[data-icon="pin"]),
+.btn-icon:has(svg[data-icon="lock"]),
+.btn-icon:has(svg[data-icon="volume"]) {
+  background: hsl(var(--warning) / 0.14);
+  color: hsl(var(--warning));
+}
+.btn-icon:has(svg[data-icon="pin"]):hover:not(:disabled),
+.btn-icon:has(svg[data-icon="lock"]):hover:not(:disabled),
+.btn-icon:has(svg[data-icon="volume"]):hover:not(:disabled) {
+  background: hsl(var(--warning) / 0.22);
+  border-color: hsl(var(--warning) / 0.28);
+}
+
+/* Emoji verbs already encode their meaning in colour; the tile is only a hit
+   target. A neutral chip keeps four glyphs per row from competing with each
+   other, and the hover accent carries the interaction instead. */
+.btn-icon:has(.emoji-icon) {
+  background: hsl(var(--secondary) / 0.6);
+  border-color: transparent;
+}
+.btn-icon:has(.emoji-icon):hover:not(:disabled) {
   background: hsl(var(--accent));
-}
-.tab-row[data-active="true"] .tab-actions .btn,
-.tab-row:hover .tab-actions .btn {
   border-color: hsl(var(--border));
+  transform: translateY(-1px);
+}
+.btn-icon:has(.emoji-icon):disabled {
+  background: hsl(var(--muted) / 0.45);
+}
+.btn-icon:has(.emoji-icon):disabled .emoji-icon {
+  filter: saturate(0.55);
+  opacity: 0.5;
+}
+.emoji-icon {
+  display: block;
+  pointer-events: none;
+}
+
+/* A small nudge so the row feels touchable. */
+.tab-actions svg {
+  transition: transform var(--duration-1) var(--ease-out);
+}
+.tab-actions .btn:hover:not(:disabled) svg[data-icon="moon"] {
+  transform: rotate(-18deg);
+}
+.tab-actions .btn:hover:not(:disabled) svg[data-icon="play"] {
+  transform: scale(1.12);
+}
+.tab-actions .btn:hover:not(:disabled) svg[data-icon="crosshair"] {
+  transform: rotate(90deg);
+}
+.tab-actions .btn:hover:not(:disabled) svg[data-icon="trash"] {
+  transform: translateY(-1.5px);
+}
+.tab-actions .emoji-icon {
+  transition: transform var(--duration-1) var(--ease-out);
+}
+.tab-actions .btn:hover:not(:disabled) .emoji-icon[data-emoji="crescent-moon"] {
+  transform: rotate(-14deg);
+}
+.tab-actions .btn:hover:not(:disabled) .emoji-icon[data-emoji="play-button"],
+.tab-actions .btn:hover:not(:disabled) .emoji-icon[data-emoji="bullseye"] {
+  transform: scale(1.1);
 }
 
 .idle-bar {
@@ -432,9 +564,6 @@
 }
 .tone-warning {
   background: hsl(var(--warning));
-}
-.tone-destructive {
-  background: hsl(var(--destructive));
 }
 
 .group-chip {
@@ -987,54 +1116,19 @@
   margin: 0 auto;
   height: 34px;
 }
-.nav-icon {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  background: transparent;
-  color: hsl(var(--muted-foreground));
-  cursor: pointer;
-  transition: background var(--duration-1) var(--ease-out),
-    color var(--duration-1) var(--ease-out),
-    border-color var(--duration-1) var(--ease-out);
-}
-.nav-icon:hover {
-  background: hsl(var(--accent));
-  color: hsl(var(--foreground));
-}
-.nav-icon[aria-pressed="true"] {
-  background: hsl(var(--accent-brand-strong));
-  border-color: hsl(var(--primary) / 0.3);
-  color: hsl(var(--primary));
-}
-.nav-icon[aria-pressed="true"]::after {
-  content: "";
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: -1px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--gradient-brand);
-}
-.nav-icon svg {
-  width: 16px;
-  height: 16px;
-}
+/* Count badge riding the top-right corner of a nav tile. It reports volume,
+   not danger, so it wears the brand colour; red stays on close/delete. */
 .nav-dot {
   position: absolute;
-  top: 2px;
-  right: 2px;
+  top: -5px;
+  right: -5px;
   min-width: 14px;
   height: 14px;
   padding: 0 3px;
   border-radius: 999px;
-  background: hsl(var(--destructive));
-  color: hsl(var(--destructive-foreground));
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  box-shadow: 0 0 0 2px hsl(var(--card));
   font-size: 9.5px;
   font-weight: 700;
   line-height: 14px;
@@ -1043,14 +1137,27 @@
 }
 
 .app-body {
+  /* Rail and work column are capped as a pair: narrowing one without the other
+     leaves a dead band between them, so the body width is derived, not typed. */
+  --rail-w: 300px;
+  --main-max: 1040px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 336px;
+  grid-template-columns: minmax(0, 1fr) var(--rail-w);
   gap: var(--sp-4);
   padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  width: 100%;
+  max-width: calc(var(--main-max) + var(--rail-w) + var(--sp-4) + 2 * var(--sp-5));
+  margin-inline: auto;
   flex: 1 1 auto;
   min-height: 0;
 }
+/* Working column: past ~1040 the site grid turns into three very wide cards and
+   the suggestion row reads as a full-width banner. Keep the work area card-sized
+   and centred; the collections rail stays pinned to the right. */
 .main-col {
+  width: 100%;
+  max-width: var(--main-max);
+  margin-inline: auto;
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -1220,4 +1327,12 @@
 }
 .picker-item:hover {
   background: hsl(var(--accent));
+}
+
+/* Sleeping is the one tab state with a mark of its own; a faint violet wash
+   keeps 💤 from reading as plain grey text. */
+.badge-muted:has(.emoji-icon) {
+  background: hsl(var(--dormant) / 0.11);
+  border-color: hsl(var(--dormant) / 0.24);
+  color: hsl(var(--dormant));
 }

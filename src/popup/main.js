@@ -1,4 +1,4 @@
-import { h, ico, clear, append, toast, Button, IconButton, Badge, Tabs, Empty, hotkeys } from "../ui/kit.js";
+import { h, ico, clear, append, toast, Button, IconButton, ActionTile, Badge, Tabs, Empty, hotkeys } from "../ui/kit.js";
 import { MOD_KEY } from "../core/utils.js";
 import { bootPage, TabRow, Favicon, toastError, openPalette, standardTabActions, openFavoritePicker, onStorageChanged, featureOn, paletteHint } from "../ui/shared.js";
 import { renderCollectionsPanel } from "../ui/collections-panel.js";
@@ -23,9 +23,9 @@ bootPage(async () => {
     { style: { height: "52px", padding: "0 12px", gap: "10px" } },
     h("img", { src: chrome.runtime.getURL("assets/icon48.png"), style: { width: "26px", height: "26px", borderRadius: "7px" } }),
     h("div.col.flex-1.min-h-0", h("div.topbar-title", { style: { fontSize: "13.5px" } }, "Tab Steward"), subEl),
-    IconButton({ icon: "search", label: "全局搜索面板", size: "xs", onClick: () => openPalette({ onPick: handlePick }) }),
-    IconButton({ icon: "layout-dashboard", label: "打开 Dashboard", size: "xs", onClick: () => chrome.runtime.sendMessage({ type: "dashboard:open" }) }),
-    IconButton({ icon: "settings", label: "设置", size: "xs", onClick: () => chrome.runtime.openOptionsPage?.() })
+    ActionTile({ emoji: "magnifying-glass-tilted-left", label: "全局搜索面板", size: "sm", onClick: () => openPalette({ onPick: handlePick }) }),
+    ActionTile({ emoji: "house", label: "打开 Dashboard", size: "sm", onClick: () => chrome.runtime.sendMessage({ type: "dashboard:open" }) }),
+    ActionTile({ emoji: "gear", label: "设置", size: "sm", onClick: () => chrome.runtime.openOptionsPage?.() })
   );
 
   // same interaction as the dashboard: clicking search opens the palette overlay
@@ -169,6 +169,7 @@ bootPage(async () => {
 
     const build = () => {
       const rows = h("div.site-card-body.col.gap-0-5");
+      const anySleepable = card.tabs.some((t) => t.isSleepable);
       if (open) for (const tab of card.tabs) append(rows, TabRow(tab, { actions: tabActions(tab), onOpen: (t) => focusTab(t.id, t.windowId), compact: true }));
 
       const el = h(
@@ -181,11 +182,15 @@ bootPage(async () => {
           ico(open ? "chevron-down" : "chevron-right", 13, "collapse-chevron"),
           Favicon({ url: card.tabs[0]?.url, size: 24, tinted: true }),
           h("div.col.flex-1.min-h-0", h("div.site-card-title.truncate", card.site), h("div.site-card-sub", `${card.tabs.length} 个标签 · 闲置度 ${card.avgIdle}`)),
-          ...(featureOn("duplicates") && card.dupeCount ? [Badge({ label: `重复 ${card.dupeCount}`, variant: "destructive", icon: "copy" })] : []),
+          ...(featureOn("duplicates") && card.dupeCount ? [Badge({ label: `重复 ${card.dupeCount}`, variant: "warning", icon: "copy" })] : []),
           ...(featureOn("sleep")
-            ? [IconButton({ icon: "moon", label: "休眠该站点", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await sleepTabs(card.tabs.map((t) => t.id)); toast({ title: `已休眠 ${r.slept} 个`, description: r.skipped.length ? `${r.skipped.length} 个不符合休眠条件` : "" }); render(); } })]
+            ? [
+                anySleepable
+                  ? IconButton({ emoji: "crescent-moon", label: "休眠该站点", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await sleepTabs(card.tabs.map((t) => t.id)); toast({ title: `已休眠 ${r.slept} 个`, description: r.skipped.length ? `${r.skipped.length} 个不符合休眠条件` : "" }); render(); } })
+                  : IconButton({ icon: "moon", iconSize: 16, label: "该站点没有可休眠的标签", size: "xs", disabled: true }),
+              ]
             : []),
-          IconButton({ icon: "x", label: "关闭该站点", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs(card.tabs.map((t) => t.id)); if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "Chrome 拒绝了关闭请求，其余标签已关闭。"); render(); } })
+          IconButton({ icon: "x", iconSize: 16, label: "关闭该站点", size: "xs", onClick: async (e) => { e.stopPropagation(); const r = await closeTabs(card.tabs.map((t) => t.id)); if (r.failed.length) toastError(`${r.failed.length} 个标签关闭失败`, "Chrome 拒绝了关闭请求，其余标签已关闭。"); render(); } })
         ),
         open ? rows : null
       );

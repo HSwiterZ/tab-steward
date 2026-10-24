@@ -191,6 +191,67 @@
   background: currentColor;
 }
 
+/* ============================ Action tile ============================ */
+/* The top row's rhythm: one bright mark per verb on a raised neutral tile.
+   The glyph supplies the colour; the tile stays quiet so a row of six does
+   not turn into confetti. */
+.action-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid hsl(var(--border) / 0.9);
+  border-radius: 12px;
+  background: hsl(var(--card));
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  transition: background var(--duration-1) var(--ease-out),
+    border-color var(--duration-1) var(--ease-out),
+    box-shadow var(--duration-1) var(--ease-out),
+    transform var(--duration-1) var(--ease-out);
+}
+.action-tile-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+}
+.action-tile:hover:not(:disabled) {
+  background: hsl(var(--accent));
+  border-color: hsl(var(--border));
+  box-shadow: 0 4px 10px hsl(var(--shadow-color) / 0.1);
+  transform: translateY(-1px);
+}
+.action-tile:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-1);
+}
+.action-tile[aria-pressed="true"] {
+  background: hsl(var(--accent-brand-strong));
+  border-color: hsl(var(--primary) / 0.3);
+}
+.action-tile[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gradient-brand);
+  pointer-events: none;
+}
+.action-tile:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.action-tile .emoji-icon {
+  display: block;
+  pointer-events: none;
+}
+
 /* ============================ Card ============================ */
 .card {
   background: hsl(var(--card));
@@ -299,7 +360,7 @@ textarea.input {
   border: 1px solid hsl(var(--input));
   font-size: 12.5px;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 256 256' fill='%23888'%3E%3Cpath d='m208 96l-80 80l-80-80Z' opacity='.2'/%3E%3Cpath d='M215.39 92.94A8 8 0 0 0 208 88H48a8 8 0 0 0-5.66 13.66l80 80a8 8 0 0 0 11.32 0l80-80a8 8 0 0 0 1.73-8.72M128 164.69L67.31 104h121.38Z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 7px center;
 }

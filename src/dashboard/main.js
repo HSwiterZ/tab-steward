@@ -1,4 +1,4 @@
-import { h, ico, clear, append, toast, IconButton, Button, hotkeys } from "../ui/kit.js";
+import { h, ico, clear, append, toast, ActionTile, Button, hotkeys } from "../ui/kit.js";
 import { openPalette, onTabsChanged, onStorageChanged, toastError, bootPage, featureOn, paletteHint } from "../ui/shared.js";
 import { store } from "../core/storage.js";
 import { MOD_KEY } from "../core/utils.js";
@@ -9,10 +9,10 @@ import { renderCollectionsPanel, renderLibrary, renderReminders, renderSnapshots
 
 const VIEWS = {
   tabs: { render: renderTabsView, icon: "app-window", label: "当前标签", desc: "" },
-  reminders: { render: renderReminders, icon: "bell", label: "提醒", desc: "到点通过系统通知、扩展角标与 Dashboard 横幅提醒你。" },
-  snapshots: { render: renderSnapshots, icon: "package", label: "工作区快照", desc: "保存窗口布局与标签顺序，随时一键恢复。" },
-  analytics: { render: renderAnalytics, icon: "bar-chart", label: "使用分析", desc: "前台停留时长、激活次数与闲置度统计。" },
-  data: { render: renderData, icon: "database", label: "回收站与备份", desc: "删除的内容保留 30 天；备份可导出为 JSON。" },
+  reminders: { render: renderReminders, icon: "bell", emoji: "alarm-clock", label: "提醒", desc: "到点通过系统通知、扩展角标与 Dashboard 横幅提醒你。" },
+  snapshots: { render: renderSnapshots, icon: "package", emoji: "package", label: "工作区快照", desc: "保存窗口布局与标签顺序，随时一键恢复。" },
+  analytics: { render: renderAnalytics, icon: "bar-chart", emoji: "bar-chart", label: "使用分析", desc: "前台停留时长、激活次数与闲置度统计。" },
+  data: { render: renderData, icon: "database", emoji: "file-cabinet", label: "回收站与备份", desc: "删除的内容保留 30 天；备份可导出为 JSON。" },
 };
 
 const NAV_ORDER = ["reminders", "snapshots", "analytics", "data"];
@@ -146,18 +146,15 @@ function renderBanner() {
 
 function navButton(id) {
   const meta = VIEWS[id];
-  const btn = h(
-    "button.nav-icon",
-    {
-      dataset: { view: id },
-      title: meta.label,
-      "data-tip": meta.label,
-      "aria-pressed": "false",
-      onClick: () => navigate(app.view === id ? "tabs" : id),
-    },
-    ico(meta.icon, 16),
-    h("span.nav-dot")
-  );
+  const btn = ActionTile({
+    emoji: meta.emoji,
+    label: meta.label,
+    pressed: app.view === id,
+    dataset: { view: id },
+    cls: "nav-icon",
+    onClick: () => navigate(app.view === id ? "tabs" : id),
+    children: h("span.nav-dot"),
+  });
   app.navButtons.set(id, btn);
   return btn;
 }
@@ -183,7 +180,11 @@ function buildShell() {
 
   const themeButton = () => {
     const dark = document.documentElement.dataset.theme === "dark";
-    const b = IconButton({ icon: dark ? "moon" : "sun", label: "切换主题", onClick: () => store.patch("settings", { theme: dark ? "light" : "dark" }) });
+    const b = ActionTile({
+      emoji: dark ? "crescent-moon" : "sun",
+      label: "切换主题",
+      onClick: () => store.patch("settings", { theme: dark ? "light" : "dark" }),
+    });
     b.dataset.themeToggle = "true";
     return b;
   };
@@ -198,12 +199,12 @@ function buildShell() {
     ),
     searchTrigger,
     h(
-      "div.row.gap-1.shrink-0",
+      "div.row.gap-2.shrink-0",
       ...NAV_ORDER.map(navButton),
       h("span.sep-v"),
       themeButton(),
-      IconButton({
-        icon: "settings",
+      ActionTile({
+        emoji: "gear",
         label: "设置",
         onClick: () => {
           if (chrome.runtime.openOptionsPage) chrome.runtime.openOptionsPage();

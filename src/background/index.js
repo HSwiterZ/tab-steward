@@ -58,6 +58,9 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
 
 chrome.runtime.onStartup?.addListener(async () => {
   await store.ready;
+  // Menus do not survive a browser restart; without this the right-click menu
+  // stays empty until some unrelated tab event rebuilds it.
+  await buildContextMenus();
   await syncAlarms();
   await syncSleepAlarm();
   await primeTracker();
@@ -219,21 +222,64 @@ chrome.notifications?.onButtonClicked?.addListener(async (nid, buttonIndex) => {
  * ====================================================================== */
 
 const MENU_ROOT = "ts-root";
-let menuBuildSeq = 0;
 
-async function buildContextMenus() {
-  if (!chrome.contextMenus?.create) return;
-  const seq = ++menuBuildSeq;
-  await chrome.contextMenus.removeAll().catch(() => {});
-  if (seq !== menuBuildSeq) return;
-
-  // children reference their parent by id, so every create has to land in order
-  const create = async (props) => {
+/**
+ * contextMenus.create is callback-only (it returns undefined), so awaiting it
+ * resolves immediately and failures only surface as runtime.lastError. Wait for
+ * each callback so parent/child ordering is guaranteed and a rejected create is
+ * logged instead of stalling the rest of the tree.
+ *
+ * Chrome's CreateProperties has no `icons` field: sending one makes create reject
+ * with "Unexpected property: 'icons'", and every child then dies with
+ * "Cannot find menu item with id ts-root". The only glyph a native item can carry
+ * is an emoji written into its title, which is why the action items below start
+ * with one. Values (preset minutes, collection names, window labels) stay plain.
+ */
+const createMenuItem = (props) =>
+  new Promise((resolve) => {
+    let settled = false;
+    const done = (message) => {
+      if (settled) return;
+      settled = true;
+      resolve(message || "");
+    };
     try {
-      await chrome.contextMenus.create({ ...props, contexts: props.contexts || ["page"] });
+      const maybe = chrome.contextMenus.create(
+        { ...props, contexts: props.contexts || ["page"] },
+        () => done(chrome.runtime.lastError?.message)
+      );
+      maybe?.catch?.(() => {});
     } catch (err) {
-      console.warn("[menus] create failed:", props.id, err?.message || err);
+      done(err?.message || String(err));
     }
+  });
+
+const removeAllMenus = () =>
+  new Promise((resolve) => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    try {
+      const maybe = chrome.contextMenus.removeAll(() => {
+        void chrome.runtime.lastError;
+        done();
+      });
+      maybe?.then?.(done, done);
+    } catch {
+      done();
+    }
+  });
+
+async function buildContextMenusOnce() {
+  if (!chrome.contextMenus?.create) return;
+  await removeAllMenus();
+
+  const create = async (props) => {
+    const failure = await createMenuItem(props);
+    if (failure) console.warn("[menus] create failed:", props.id, failure);
   };
 
   await create({ id: MENU_ROOT, title: "Tab Steward — 标签页管理器", contexts: ["page", "selection"] });
@@ -243,7 +289,7 @@ async function buildContextMenus() {
 
   if (on("reminders")) {
     const presets = settings.reminders?.presets || [5, 15, 30, 60, 120, 480];
-    await create({ id: "remind", parentId: MENU_ROOT, title: "设定提醒" });
+    await create({ id: "remind", parentId: MENU_ROOT, title: "⏰ 设定提醒" });
     for (const m of presets) {
       await create({ id: `remind-${m}`, parentId: "remind", title: m < 60 ? `${m} 分钟后` : `${m / 60} 小时后` });
     }
@@ -251,18 +297,18 @@ async function buildContextMenus() {
   }
 
   const collections = (store.get("collections") || []).filter((c) => on("favorites") || c.id === STASH_ID);
-  await create({ id: "stash", parentId: MENU_ROOT, title: "暂存到…" });
-  await create({ id: "stash-close", parentId: MENU_ROOT, title: "暂存并关闭到…" });
+  await create({ id: "stash", parentId: MENU_ROOT, title: "📥 暂存到…" });
+  await create({ id: "stash-close", parentId: MENU_ROOT, title: "📦 暂存并关闭到…" });
   for (const col of collections) {
     await create({ id: `stash-${col.id}`, parentId: "stash", title: col.name });
     await create({ id: `stashclose-${col.id}`, parentId: "stash-close", title: col.name });
   }
 
   if (on("sleep")) {
-    await create({ id: "sleep", parentId: MENU_ROOT, title: "休眠此标签" });
+    await create({ id: "sleep", parentId: MENU_ROOT, title: "🌙 休眠此标签" });
   }
 
-  await create({ id: "move", parentId: MENU_ROOT, title: "移动到窗口" });
+  await create({ id: "move", parentId: MENU_ROOT, title: "🪟 移动到窗口" });
   const windows = await chrome.windows.getAll({}).catch(() => []);
   const ordinals = windowOrdinals(windows);
   for (const w of windows.filter((x) => x.type === "normal")) {
@@ -272,13 +318,26 @@ async function buildContextMenus() {
   }
 
   if (on("organize")) {
-    await create({ id: "organize", parentId: MENU_ROOT, title: "整理所有标签 (站点 + 收藏区分组)" });
+    await create({ id: "organize", parentId: MENU_ROOT, title: "🧹 整理所有标签 (站点 + 收藏区分组)" });
   }
   if (on("sleep")) {
     await create({ id: "sep-a", parentId: MENU_ROOT, type: "separator" });
-    await create({ id: "protect-toggle", parentId: MENU_ROOT, title: "保护此站点（不自动休眠）" });
+    await create({ id: "protect-toggle", parentId: MENU_ROOT, title: "🛡️ 保护此站点（不自动休眠）" });
   }
-  await create({ id: "dashboard", parentId: MENU_ROOT, title: "打开 Dashboard" });
+  await create({ id: "dashboard", parentId: MENU_ROOT, title: "📊 打开 Dashboard" });
+}
+
+/**
+ * Builds are serialised: settings changes and install events can both fire while
+ * a rebuild is still awaiting its create callbacks. A second removeAll then wiped
+ * half a tree and left the older pass creating orphans. Queue them instead of
+ * letting them interleave.
+ */
+let menuBuildQueue = Promise.resolve();
+function buildContextMenus() {
+  const run = menuBuildQueue.then(buildContextMenusOnce, buildContextMenusOnce);
+  menuBuildQueue = run.catch(() => {});
+  return run;
 }
 
 const rebuildMenusDebounced = (() => {

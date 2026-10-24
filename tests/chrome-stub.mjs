@@ -203,6 +203,7 @@ export function installChromeStub({ tabs = [], windows = [{ id: 1, type: "normal
     __state: state,
     runtime: {
       id: "testextensionid",
+      lastError: undefined,
       getURL: (p) => `chrome-extension://testextensionid/${String(p).replace(/^\//, "")}`,
       getManifest: () => ({ manifest_version: 3, version: "1.0.0" }),
       async sendMessage(msg) {
@@ -321,11 +322,38 @@ export function installChromeStub({ tabs = [], windows = [{ id: 1, type: "normal
     history: { async search() { return []; } },
     sessions: { async getRecentlyClosed() { return []; } },
     contextMenus: {
-      async create(props) {
-        state.menus.set(String(props?.id ?? props?.title ?? ""), { ...props });
+      // Chrome's create is callback-only (returns undefined) and refuses a child
+      // whose parent is not registered yet. Mirror both: an `await` on the raw
+      // call is a no-op, and out-of-order creation must fail here, not only in
+      // a real browser after the extension is reloaded.
+      create(props, callback) {
+        const id = String(props?.id ?? props?.title ?? "");
+        const register = () => {
+          let error = "";
+          if (state.menus.has(id)) error = `Cannot create item with duplicate id ${id}`;
+          else if (props?.parentId && !state.menus.has(String(props.parentId))) error = `Cannot find menu item with id ${props.parentId}`;
+          else state.menus.set(id, { ...props });
+          if (typeof callback === "function") {
+            api.runtime.lastError = error ? { message: error } : undefined;
+            try {
+              callback();
+            } finally {
+              api.runtime.lastError = undefined;
+            }
+          } else if (error) {
+            throw new Error(error);
+          }
+        };
+        // An icon has to be loaded before Chrome registers the item, so the
+        // parent check happens later than the call. That delay is what turned
+        // "create parent, then child" into "Cannot find menu item with id".
+        if (props?.icons) setTimeout(register, 1);
+        else queueMicrotask(register);
+        return undefined;
       },
-      async removeAll() {
+      removeAll(callback) {
         state.menus.clear();
+        if (typeof callback === "function") queueMicrotask(callback);
       },
       onClicked: new Emitter(),
     },

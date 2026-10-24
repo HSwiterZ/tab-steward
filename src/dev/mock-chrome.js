@@ -943,10 +943,13 @@ const actionApi = {
 
 const commandEvents = { onCommand: EventTarget_() };
 const contextMenusApi = {
-  create(props) {
+  create(props, callback) {
+    if (typeof callback === "function") queueMicrotask(callback);
     return props.id;
   },
-  async removeAll() {},
+  removeAll(callback) {
+    if (typeof callback === "function") queueMicrotask(callback);
+  },
   async update() {},
   async remove() {},
   onClicked: EventTarget_(),

@@ -1,15 +1,19 @@
-import { h, ico, append, installTooltips, watchTheme, IconButton, hotkeys } from "../ui/kit.js";
+import { h, ico, append, installTooltips, watchTheme, ActionTile, hotkeys } from "../ui/kit.js";
 import { Favicon, openPalette, paletteHint } from "../ui/shared.js";
 import { store } from "../core/storage.js";
 import { formatClock, formatDate, hostname, MOD_KEY } from "../core/utils.js";
 
 await store.ready;
 
+/** Timers and shortcuts the start page owns, released when the dashboard takes over. */
+let clockTimer = 0;
+let stopMinimalKeys = null;
+
 const settings = store.get("settings") || {};
 watchTheme(settings.theme || "system");
 store.on("settings", (next) => {
   watchTheme(next?.theme || "system");
-  if (next?.newtab?.mode === "dashboard" && !document.querySelector(".app")) location.reload();
+  if (next?.newtab?.mode === "dashboard" && !document.querySelector(".app2")) location.reload();
 });
 installTooltips();
 
@@ -17,6 +21,21 @@ if ((settings.newtab?.mode || "minimal") === "dashboard") {
   await import("../dashboard/main.js");
 } else {
   renderMinimal();
+}
+
+/**
+ * Swap the start page for the full dashboard inside this tab. The new-tab page
+ * is already a normal tab, so importing the dashboard here avoids both an extra
+ * tab and a chrome-extension://…/src/dashboard/index.html address in the
+ * omnibox. Nothing is persisted: the next new tab is the start page again.
+ */
+async function openDashboardInline() {
+  stopMinimalKeys?.();
+  stopMinimalKeys = null;
+  clearInterval(clockTimer);
+  clockTimer = 0;
+  document.getElementById("root").replaceChildren();
+  await import("../dashboard/main.js");
 }
 
 function renderMinimal() {
@@ -31,7 +50,7 @@ function renderMinimal() {
     date.textContent = `${formatDate(d.getTime())} ${weekday}`;
   };
   tick();
-  setInterval(tick, 1000);
+  clockTimer = setInterval(tick, 1000);
 
   const searchBox = h(
     "button.search-trigger.newtab-search",
@@ -56,8 +75,8 @@ function renderMinimal() {
       h(
         "div.row.gap-2",
         { style: { position: "fixed", top: "16px", right: "16px" } },
-        IconButton({ icon: "layout-dashboard", label: "打开 Dashboard", onClick: () => chrome.runtime.sendMessage({ type: "dashboard:open" }) }),
-        IconButton({ icon: "settings", label: "设置", onClick: () => chrome.runtime.openOptionsPage?.() })
+        ActionTile({ emoji: "house", label: "打开 Dashboard", onClick: openDashboardInline }),
+        ActionTile({ emoji: "gear", label: "设置", onClick: () => chrome.runtime.openOptionsPage?.() })
       ),
       greet ? h("div.text-lg.muted", greet) : null,
       h("div.col", { style: { alignItems: "center" } }, clock, date),
@@ -71,7 +90,7 @@ function renderMinimal() {
     openPalette({ onPick: openItem });
   };
 
-  hotkeys({
+  stopMinimalKeys = hotkeys({
     "mod+k": { fn: openSearch, allowTyping: true },
     "/": openSearch,
   });

@@ -3,6 +3,7 @@
  * chrome test double in Node:  node tests/run.mjs
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { installChromeStub } from "./chrome-stub.mjs";
 
 const chrome = installChromeStub({
@@ -136,6 +137,8 @@ test("闲置度：随闲置时长单调上升且分段正确", () => {
   }
   assert.equal(stats.bandForScore(5).id, "active");
   assert.equal(stats.bandForScore(95).id, "severe");
+  // Red is reserved for closing/deleting; idle pressure tops out at amber.
+  assert.ok(stats.IDLE_BANDS.every((b) => b.tone !== "destructive"), "闲置色阶不得使用红色");
 });
 
 test("闲置度：活动标签恒为 0，休眠标签仍计入闲置", () => {
@@ -687,6 +690,18 @@ test("service worker：模块图可完整加载并挂上维护闹钟", async () 
   assert.ok(chrome.__state.menus.has("dashboard"), "菜单要建到最后一项，bootstrap 半路抛错这里就缺");
 });
 
+test("右键菜单：浏览器重启（onStartup）后自己重建，不靠别的事件顺带触发", async () => {
+  chrome.__state.menus.clear();
+  chrome.runtime.onStartup.fire();
+  await new Promise((r) => setTimeout(r, 250));
+  assert.ok(chrome.__state.menus.has("ts-root"), "重启后菜单是空的，直到某次切标签才补上");
+  assert.ok(chrome.__state.menus.has("dashboard"), "重启后应建到最后一个动作项");
+  for (const parent of ["remind", "stash", "stash-close", "move"]) {
+    const kids = [...chrome.__state.menus.values()].filter((m) => m.parentId === parent);
+    assert.ok(kids.length > 0, `${parent} 重启后应仍有子项`);
+  }
+});
+
 /* ================= 重复标签提示（service worker 监听已挂上） ================= */
 
 const dupeNotifications = () => chrome.__state.notifications.filter((n) => n.id.startsWith("dupe-"));
@@ -756,6 +771,48 @@ test("重复标签：关闭模块后后台停止检测重复", async () => {
   await openDuplicateTab();
   assert.equal(dupeNotifications().length, 0, "模块关掉后不该再发通知");
   assert.equal(chrome.__state.removedTabs.length, removed);
+});
+
+/* ============================ context menu ============================ */
+
+test("右键菜单：只用 Chrome 支持的 CreateProperties，父子项都在", () => {
+  // The service-worker test above already built the menus against the stub.
+  const menuless = [...chrome.__state.menus.values()];
+  assert.ok(menuless.length > 10, `菜单项太少（${menuless.length}），可能建到一半就断了`);
+
+  // Chrome's CreateProperties is a closed set: `icons` is NOT among them, and
+  // sending it makes every icon-bearing create reject ("Unexpected property"),
+  // which then strands all children with "Cannot find menu item with id".
+  const allowed = new Set([
+    "type", "id", "title", "checked", "contexts", "parentId",
+    "documentUrlPatterns", "targetUrlPatterns", "enabled", "visible",
+  ]);
+  for (const item of menuless) {
+    const extra = Object.keys(item).filter((k) => !allowed.has(k));
+    assert.deepEqual(extra, [], `${item.id} 含 Chrome 不认识的属性：${extra.join(", ")}`);
+  }
+
+  // Every parent must actually own its subtree — a half-built tree is what the
+  // "Cannot find menu item with id remind" cascade looked like.
+  for (const parent of ["remind", "stash", "stash-close", "move", "ts-root"]) {
+    const kids = menuless.filter((m) => m.parentId === parent);
+    assert.ok(kids.length > 0, `${parent} 下应有子项，否则右键菜单只剩光杆父项`);
+  }
+  assert.ok(chrome.__state.menus.has("dashboard"), "打开 Dashboard 应在菜单末尾");
+
+  // No icon field exists, so each top-level action needs its glyph in the title.
+  // Values (preset minutes, collection names, window labels) must stay plain.
+  const glyph = /^\p{Extended_Pictographic}/u;
+  for (const id of ["remind", "stash", "stash-close", "sleep", "move", "organize", "protect-toggle", "dashboard"]) {
+    const item = chrome.__state.menus.get(id);
+    assert.ok(item, `缺少菜单项 ${id}`);
+    assert.match(item.title, glyph, `${id} 的标题应以 emoji 开头，否则原生菜单里没有图标`);
+  }
+  for (const id of ["remind-5", "stash-stash"]) {
+    const item = chrome.__state.menus.get(id);
+    assert.ok(item, `缺少菜单项 ${id}`);
+    assert.doesNotMatch(item.title, glyph, `${id} 是取值项，不该带 emoji`);
+  }
 });
 
 /* ------------------------------------------------------------------ */

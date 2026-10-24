@@ -1,4 +1,5 @@
 import { iconSvg } from "./icons.js";
+import { emojiImg } from "./emoji.js";
 import { uid, clamp, highlight } from "../core/utils.js";
 
 /* ====================================================================== *
@@ -166,7 +167,21 @@ export function Button({ label, icon, variant = "outline", size = "sm", onClick,
   );
 }
 
-export function IconButton({ icon, onClick, label, variant = "ghost", size = "sm", disabled, cls, pressed }) {
+/**
+ * `emoji` swaps the duotone glyph for a Fluent Emoji. Row-level verbs use it so
+ * the dashboard, popup and menus all speak the same visual language; the tile
+ * stays neutral because the glyph already carries the colour.
+ */
+export function IconButton({ icon, emoji, iconSize, onClick, label, variant = "ghost", size = "sm", disabled, cls, pressed }) {
+  const glyph = emoji
+    ? emojiImg(emoji, size === "xs" ? 16 : size === "lg" ? 22 : 18)
+    : ico(icon, iconSize ?? (size === "xs" ? 12 : size === "lg" ? 17 : 15));
+  // .btn-xs/.btn-sm pin every svg to their own size; an explicit iconSize has
+  // to ride inline to win over those rules.
+  if (iconSize && !emoji) {
+    glyph.style.width = `${iconSize}px`;
+    glyph.style.height = `${iconSize}px`;
+  }
   return h(
     `button.btn.btn-icon.btn-${variant}`,
     {
@@ -179,15 +194,39 @@ export function IconButton({ icon, onClick, label, variant = "ghost", size = "sm
       class: [`btn-${size}`, pressed != null && `is-pressed-${pressed}`, cls],
       "aria-pressed": pressed == null ? null : String(pressed),
     },
-    ico(icon, size === "xs" ? 12 : size === "lg" ? 17 : 15)
+    glyph
   );
 }
 
-export function Badge({ label, variant = "secondary", icon, cls, title }) {
+/**
+ * A top-level action: one emoji on a raised tile. Reserved for the global rows
+ * (dashboard nav, popup header, new-tab corner); row-level verbs use
+ * IconButton({ emoji }) and structural glyphs stay on the icons.js table.
+ */
+export function ActionTile({ emoji, label, onClick, size = "md", cls, pressed, dataset, disabled, title, children }) {
+  return h(
+    `button.action-tile.action-tile-${size}`,
+    {
+      type: "button",
+      onClick,
+      disabled,
+      title: title || label,
+      "aria-label": label,
+      "data-tip": label,
+      "aria-pressed": pressed == null ? null : String(pressed),
+      dataset,
+      class: cls,
+    },
+    emojiImg(emoji, size === "sm" ? 18 : 22),
+    children || null
+  );
+}
+
+export function Badge({ label, variant = "secondary", icon, emoji, cls, title }) {
   return h(
     `span.badge.badge-${variant}`,
     { class: cls, title },
-    icon ? ico(icon, 11) : null,
+    emoji ? emojiImg(emoji, 13) : icon ? ico(icon, 11) : null,
     label != null ? String(label) : null
   );
 }
@@ -512,8 +551,8 @@ export function openMenu(anchor, items, opts = {}) {
   return api;
 }
 
-export function MenuButton({ icon = "ellipsis", label, items, variant = "ghost", size = "sm", cls, align = "end" }) {
-  const btn = IconButton({ icon, label: label || "更多操作", variant, size, cls });
+export function MenuButton({ icon = "ellipsis", emoji, label, items, variant = "ghost", size = "sm", cls, align = "end" }) {
+  const btn = IconButton({ icon, emoji, label: label || "更多操作", variant, size, cls });
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     if (activeMenu && activeMenu.anchor === btn) {

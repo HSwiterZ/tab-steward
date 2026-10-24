@@ -370,7 +370,7 @@ function openTabPicker(anchor, tabs, onPick) {
           Favicon({ url: t.url, size: 16 }),
           h("div.col.flex-1.min-h-0", h("div.tab-title", t.title || t.url), h("div.tab-url", hostname(t.url))),
           t.active ? Badge({ label: "当前", variant: "success" }) : null,
-          t.discarded ? Badge({ label: "已休眠", variant: "muted" }) : null
+          t.discarded ? Badge({ label: "已休眠", variant: "muted", emoji: "zzz" }) : null
         )
       );
     }
