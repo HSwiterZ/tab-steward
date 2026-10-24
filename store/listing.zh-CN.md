@@ -1,6 +1,6 @@
 # Chrome Web Store 提交资料（中文）
 
-审核后台的字段按这个顺序填即可。英文版见 `listing.en.md`。
+审核后台的字段按这个顺序填即可。英文版见 `listing.en.md`；先发 Microsoft Edge 时用 `listing.edge.zh-CN.md`（注册免费，素材与字段已按 Edge 要求整理）。
 
 ## 包与版本
 
@@ -17,7 +17,7 @@
 - **语言**：中文（简体）
 - **主页**：https://github.com/HSwiterZ/tab-steward
 - **支持**：https://github.com/HSwiterZ/tab-steward/issues
-- **隐私政策**：https://hswiterz.github.io/tab-steward/privacy.html （启用 Pages 后生效）
+- **隐私政策**：https://hswiterz.github.io/tab-steward/privacy.html
 - **可见性**：不公开（Unlisted）——只有拿到链接的人能安装，不出现在搜索结果里
 - **地区**：所有地区
 - **价格**：免费
@@ -107,7 +107,7 @@ Tab Steward 把打开的标签按站点聚合，让“今天到底开了多少�
 ## 提交前检查
 
 1. 开发者账号已注册并完成身份验证（一次性 5 美元）。
-2. GitHub Pages 已启用：仓库 Settings → Pages → Source 选 “Deploy from a branch”，分支 `main`、目录 `/docs`。
+2. GitHub Pages 已启用并验证可访问（2026-10-24 起）。
 3. 打开 https://hswiterz.github.io/tab-steward/privacy.html 确认可访问，再把它填进隐私政策字段。
 4. 上传 `dist/tab-steward-1.0.0.zip`，确认版本显示 1.0.0。
 5. 可见性选“不公开（Unlisted）”，地区全选，价格免费。

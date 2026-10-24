@@ -17,7 +17,7 @@ Use this if you add an English listing in the store dashboard.
 - **Language**: English
 - **Homepage**: https://github.com/HSwiterZ/tab-steward
 - **Support**: https://github.com/HSwiterZ/tab-steward/issues
-- **Privacy policy**: https://hswiterz.github.io/tab-steward/privacy.html (live once GitHub Pages is enabled)
+- **Privacy policy**: https://hswiterz.github.io/tab-steward/privacy.html
 - **Visibility**: Unlisted — installable by link, not shown in store search
 - **Regions**: All
 - **Price**: Free
